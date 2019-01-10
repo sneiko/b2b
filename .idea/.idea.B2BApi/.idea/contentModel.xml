@@ -16,6 +16,7 @@
         <e p="Models" t="Include">
           <e p="Brand.cs" t="Include" />
           <e p="BrandType.cs" t="Include" />
+          <e p="ExcelModel.cs" t="Include" />
           <e p="Product.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -28,6 +29,9 @@
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="Services" t="Include">
+          <e p="Excel.cs" t="Include" />
         </e>
         <e p="Startup.cs" t="Include" />
         <e p="wwwroot" t="Include" />
