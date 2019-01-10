@@ -7,16 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace B2BApi.Controllers
 {
-    [Authorize]
+//    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<string> Get()
         {
-            return new string[] {"value1", "value2"};
+            return new JsonResult(new string[] {"1233", "2", "3"});
         }
 
         // GET api/values/5
