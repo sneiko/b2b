@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using B2BApi.Models;
-using B2BApi.Models.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -24,7 +24,12 @@ namespace B2BApi.DbContext
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-//            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            // Product
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new PriceConfiguration());
+            modelBuilder.ApplyConfiguration(new CompetitorsPricesConfiguration());
+            modelBuilder.ApplyConfiguration(new CompetitorsUriConfiguration());
         }
+        
     }
 }
