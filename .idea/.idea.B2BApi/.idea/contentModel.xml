@@ -5,6 +5,7 @@
       <e p="B2BApi" t="IncludeRecursive">
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
+        <e p="b2b.db" t="Include" />
         <e p="B2BApi.csproj" t="IncludeRecursive" />
         <e p="B2BDbContext.cs" t="Include" />
         <e p="Bin" t="ExcludeRecursive" />
@@ -12,18 +13,24 @@
           <e p="ValuesController.cs" t="Include" />
         </e>
         <e p="Core" t="Include" />
+        <e p="Migrations" t="Include">
+          <e p="20190111080310_InitialCreate.cs" t="Include" />
+          <e p="20190111080310_InitialCreate.Designer.cs" t="Include" />
+          <e p="B2BDbContextModelSnapshot.cs" t="Include" />
+        </e>
         <e p="Models" t="Include">
-          <e p="Attribute.cs" t="Include" />
           <e p="Brand.cs" t="Include" />
           <e p="BrandType.cs" t="Include" />
           <e p="Category.cs" t="Include" />
           <e p="Competitor.cs" t="Include" />
-          <e p="CompetitorsPrices.cs" t="Include" />
-          <e p="CompetitorsUri.cs" t="Include" />
           <e p="Enums" t="Include">
             <e p="PriceType.cs" t="Include" />
           </e>
-          <e p="Price.cs" t="Include" />
+          <e p="Helpers" t="Include">
+            <e p="CompetitorsPrices.cs" t="Include" />
+            <e p="CompetitorsUri.cs" t="Include" />
+            <e p="Price.cs" t="Include" />
+          </e>
           <e p="Product.cs" t="Include" />
           <e p="ProductAttribute.cs" t="Include" />
           <e p="StockProduct.cs" t="Include" />

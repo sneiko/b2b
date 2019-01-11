@@ -1,13 +1,13 @@
 ﻿{
   "version": "1.0.0",
   "restore": {
-    "projectUniqueName": "C:\\С# Project\\b2b\\B2BApi\\B2BApi.csproj",
+    "projectUniqueName": "/Users/s.neiko/dotNetProjects/B2BApi/B2BApi/B2BApi.csproj",
     "projectName": "B2BApi",
-    "projectPath": "C:\\С# Project\\b2b\\B2BApi\\B2BApi.csproj",
-    "outputPath": "C:\\С# Project\\b2b\\B2BApi\\obj\\",
+    "projectPath": "/Users/s.neiko/dotNetProjects/B2BApi/B2BApi/B2BApi.csproj",
+    "outputPath": "/Users/s.neiko/dotNetProjects/B2BApi/B2BApi/obj/",
     "projectStyle": "PackageReference",
     "fallbackFolders": [
-      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
     ],
     "originalTargetFrameworks": [
       "netcoreapp2.1"
