@@ -36,8 +36,8 @@ namespace B2BApi.Controllers
             using (var context = new B2BDbContext())
             {
                 var handler = context.Handlers
-                    .Include(p => p.PriceColumnItems)
-                    .Include(s => s.PriceColumnItems)
+                    .Include(p => p.GrabColumnItems)
+                    .Include(s => s.GrabColumnItems)
                     .Include( p => p.Provider)
                     .Single(i => i.Id == id);
                 

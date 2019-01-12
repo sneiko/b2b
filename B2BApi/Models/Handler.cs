@@ -14,10 +14,13 @@ namespace B2BApi.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        
+        public string Url { get; set; }
+        public string SaveFileName { get; set; }
+        public int StartRowData { get; set; }
+
         public Provider Provider { get; set; }
        
-        public ICollection<PriceColumnItem> PriceColumnItems { get; set; }
+        public ICollection<GrabColumnItem> GrabColumnItems { get; set; }
         public ICollection<HandlerSettings> Settings { get; set; }
         
         public DateTime LastUpdate { get; set; }

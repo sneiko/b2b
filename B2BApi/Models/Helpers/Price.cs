@@ -8,7 +8,7 @@ namespace B2BApi.Models.Helpers
         [Key]
         public int Id { get; set; }
         public PriceType PriceType { get; set; }
-        public string Value { get; set; }
+        public double Value { get; set; }
     }
     
 //    public class PriceConfiguration : IEntityTypeConfiguration<Price>

@@ -7,13 +7,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="wwwroot\"/>
+        <Folder Include="wwwroot\" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.1.1"/>
-        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All"/>
+        <PackageReference Include="ExcelDataReader" Version="3.4.2" />
+        <PackageReference Include="ExcelDataReader.DataSet" Version="3.4.2" />
+        <PackageReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.1.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="ExcelDataReader, Version=3.4.2.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa">
+        <HintPath>..\..\..\Users\-__-\.nuget\packages\exceldatareader\3.4.2\lib\netstandard2.0\ExcelDataReader.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\B2BApi\B2BApi.csproj" />
     </ItemGroup>
 
 </Project>
