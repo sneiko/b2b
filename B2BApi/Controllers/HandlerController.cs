@@ -51,30 +51,28 @@ namespace B2BApi.Controllers
 
         // POST api/handler
         [HttpPost]
-        public void Post([FromBody] string json)
+        public async Task<ActionResult> PostTodoItem(Handler handler)
         {
-            Console.WriteLine("JSON INPUT :::: " + json);
             using (var context = new B2BDbContext())
             {
-                Handler handler = JsonConvert.DeserializeObject<Handler>(json);
-                
-                context.Add(handler);
-                context.SaveChanges();
+                context.Handlers.Add(handler);
+                await context.SaveChangesAsync();
+                return Ok();
             }
+             
         }
 
         // PUT api/handler/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] string json)
+        public async Task<ActionResult> Put(int id, Handler handler)
         {
-            Handler handler = (Handler) JsonConvert.DeserializeObject(json);
             if (id == handler.Id)
             {
                 using (var context = new B2BDbContext())
                 {
                     // todo: затестить обновляются ли данные
                     context.Handlers.Update(handler);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                     return Ok();
                 }
             }
@@ -86,13 +84,13 @@ namespace B2BApi.Controllers
 
         // DELETE api/handler/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             using (var context = new B2BDbContext())
             {
                 var handler = context.Handlers.Single(i => i.Id == id);
                 context.Remove(handler);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return Ok();
             }
         }

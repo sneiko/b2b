@@ -48,16 +48,15 @@ namespace B2BApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<Handler>> PostTodoItem(Handler handler)
         {
-            Console.WriteLine("JSON INPUT :::: " + value);
-//            using (var context = new B2BDbContext())
-//            {
-//                Handler handler = JsonConvert.DeserializeObject<Handler>(value);
-//                
-//                context.Add(handler);
-//                context.SaveChanges();
-//            }
+            using (var context = new B2BDbContext())
+            {
+                context.Handlers.Add(handler);
+                await context.SaveChangesAsync();
+                return new JsonResult(handler);
+            }
+             
         }
 
         // PUT api/values/5
