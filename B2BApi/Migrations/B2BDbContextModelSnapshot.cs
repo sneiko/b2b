@@ -105,6 +105,12 @@ namespace B2BApi.Migrations
 
                     b.Property<int?>("ProviderId");
 
+                    b.Property<string>("SaveFileName");
+
+                    b.Property<int>("StartRowData");
+
+                    b.Property<string>("Url");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProviderId");
@@ -152,6 +158,24 @@ namespace B2BApi.Migrations
                     b.ToTable("CompetitorsUri");
                 });
 
+            modelBuilder.Entity("B2BApi.Models.Helpers.GrabColumnItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("GrabColumn");
+
+                    b.Property<int?>("HandlerId");
+
+                    b.Property<byte>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HandlerId");
+
+                    b.ToTable("GrabColumnItem");
+                });
+
             modelBuilder.Entity("B2BApi.Models.Helpers.HandlerSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -179,31 +203,13 @@ namespace B2BApi.Migrations
 
                     b.Property<int?>("ProductId");
 
-                    b.Property<string>("Value");
+                    b.Property<double>("Value");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
                     b.ToTable("Price");
-                });
-
-            modelBuilder.Entity("B2BApi.Models.Helpers.PriceColumnItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("HandlerId");
-
-                    b.Property<int>("PriceColumn");
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HandlerId");
-
-                    b.ToTable("PriceColumnItem");
                 });
 
             modelBuilder.Entity("B2BApi.Models.Helpers.ProviderContact", b =>
@@ -270,6 +276,26 @@ namespace B2BApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TimeRange");
+                });
+
+            modelBuilder.Entity("B2BApi.Models.Pattern", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ColumnId");
+
+                    b.Property<int?>("HandlerId");
+
+                    b.Property<string>("New");
+
+                    b.Property<string>("Old");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HandlerId");
+
+                    b.ToTable("Pattern");
                 });
 
             modelBuilder.Entity("B2BApi.Models.Product", b =>
@@ -351,11 +377,19 @@ namespace B2BApi.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("Count");
+
                     b.Property<int?>("ProductId");
+
+                    b.Property<int?>("ProviderId");
+
+                    b.Property<DateTime>("UpdateTime");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProviderId");
 
                     b.ToTable("StockProducts");
                 });
@@ -389,7 +423,8 @@ namespace B2BApi.Migrations
                 {
                     b.HasOne("B2BApi.Models.Provider", "Provider")
                         .WithMany()
-                        .HasForeignKey("ProviderId");
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("B2BApi.Models.Helpers.CompetitorsPrices", b =>
@@ -414,6 +449,13 @@ namespace B2BApi.Migrations
                         .HasForeignKey("ProductId");
                 });
 
+            modelBuilder.Entity("B2BApi.Models.Helpers.GrabColumnItem", b =>
+                {
+                    b.HasOne("B2BApi.Models.Handler")
+                        .WithMany("GrabColumnItems")
+                        .HasForeignKey("HandlerId");
+                });
+
             modelBuilder.Entity("B2BApi.Models.Helpers.HandlerSettings", b =>
                 {
                     b.HasOne("B2BApi.Models.Handler")
@@ -428,13 +470,6 @@ namespace B2BApi.Migrations
                         .HasForeignKey("ProductId");
                 });
 
-            modelBuilder.Entity("B2BApi.Models.Helpers.PriceColumnItem", b =>
-                {
-                    b.HasOne("B2BApi.Models.Handler")
-                        .WithMany("PriceColumnItems")
-                        .HasForeignKey("HandlerId");
-                });
-
             modelBuilder.Entity("B2BApi.Models.Helpers.ProviderContact", b =>
                 {
                     b.HasOne("B2BApi.Models.Provider")
@@ -447,6 +482,13 @@ namespace B2BApi.Migrations
                     b.HasOne("B2BApi.Models.Brand")
                         .WithMany("ShopBrandId")
                         .HasForeignKey("BrandId");
+                });
+
+            modelBuilder.Entity("B2BApi.Models.Pattern", b =>
+                {
+                    b.HasOne("B2BApi.Models.Handler")
+                        .WithMany("Patterns")
+                        .HasForeignKey("HandlerId");
                 });
 
             modelBuilder.Entity("B2BApi.Models.Product", b =>
@@ -477,9 +519,13 @@ namespace B2BApi.Migrations
 
             modelBuilder.Entity("B2BApi.Models.StockProduct", b =>
                 {
-                    b.HasOne("B2BApi.Models.Product")
+                    b.HasOne("B2BApi.Models.Product", "Product")
                         .WithMany("Stocks")
                         .HasForeignKey("ProductId");
+
+                    b.HasOne("B2BApi.Models.Provider", "Provider")
+                        .WithMany()
+                        .HasForeignKey("ProviderId");
                 });
 #pragma warning restore 612, 618
         }
