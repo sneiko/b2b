@@ -13,3 +13,18 @@
 /Users/s.neiko/dotNetProjects/B2BApi/B2BApi/obj/Debug/netcoreapp2.1/B2BApi.RazorTargetAssemblyInfo.cache
 /Users/s.neiko/dotNetProjects/B2BApi/B2BApi/obj/Debug/netcoreapp2.1/B2BApi.dll
 /Users/s.neiko/dotNetProjects/B2BApi/B2BApi/obj/Debug/netcoreapp2.1/B2BApi.pdb
+C:\С# Project\b2b\B2BApi\bin\Debug\netcoreapp2.1\B2BApi.deps.json
+C:\С# Project\b2b\B2BApi\bin\Debug\netcoreapp2.1\B2BApi.runtimeconfig.json
+C:\С# Project\b2b\B2BApi\bin\Debug\netcoreapp2.1\B2BApi.runtimeconfig.dev.json
+C:\С# Project\b2b\B2BApi\bin\Debug\netcoreapp2.1\B2BApi.dll
+C:\С# Project\b2b\B2BApi\bin\Debug\netcoreapp2.1\B2BApi.pdb
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.csprojAssemblyReference.cache
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.csproj.CoreCompileInputs.cache
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.RazorAssemblyInfo.cache
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.RazorAssemblyInfo.cs
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.AssemblyInfoInputs.cache
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.AssemblyInfo.cs
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.RazorTargetAssemblyInfo.cache
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.dll
+C:\С# Project\b2b\B2BApi\obj\Debug\netcoreapp2.1\B2BApi.pdb

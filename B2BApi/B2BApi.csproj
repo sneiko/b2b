@@ -12,11 +12,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.1.1"/>
-        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.2"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.2"/>
+        <PackageReference Include="ExcelDataReader" Version="3.4.2" />
+        <PackageReference Include="ExcelDataReader.DataSet" Version="3.4.2" />
+        <PackageReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.1.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.2" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="4.6.0-preview.18571.3" />
     </ItemGroup>
 
 </Project>

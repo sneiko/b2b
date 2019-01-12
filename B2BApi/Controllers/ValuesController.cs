@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using B2BApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace B2BApi.Controllers
 {
@@ -23,7 +25,10 @@ namespace B2BApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
-            return "value";
+            
+            var e = new Excel();
+            var r = e.Parse(id);
+            return new JsonResult(r);
         }
 
         // POST api/values
