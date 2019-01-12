@@ -6,6 +6,8 @@ using B2BApi.Models.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace B2BApi.Models
 {
@@ -22,7 +24,7 @@ namespace B2BApi.Models
        
         public ICollection<GrabColumnItem> GrabColumnItems { get; set; }
         public ICollection<HandlerSettings> Settings { get; set; }
-        
+
         public DateTime LastUpdate { get; set; }
     }
 }
