@@ -20,15 +20,19 @@ namespace B2BApi.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<string> Get()
+        public ResultObject Get()
         {
             using (var context = new B2BDbContext())
             {
                 var product = context.Products
-                    .Include(price => price.Price)
-                    .Single(x => x.Id == 1);
+                        .Include(price => price.Price)
+                        .ToList();
 
-                return new JsonResult(product);
+                return new ResultObject
+                {
+                    Message = "All good",
+                    Result = product
+                };
             }
         }
 
@@ -39,28 +43,27 @@ namespace B2BApi.Controllers
             var e = new Excel();
             var r = e.Parse(id, "https://www.dropbox.com/s/kv5bx2ncfz8bzhn/%D0%9D%D0%B0%D0%B4%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5%20%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B.xls?dl=1");
             return new JsonResult(r);
-            return "value2";
         }
 
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)
         {
-            // For more information on protecting this API from Cross Site Request Forgery (CSRF) attacks, see https://go.microsoft.com/fwlink/?LinkID=717803
+            
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
-            // For more information on protecting this API from Cross Site Request Forgery (CSRF) attacks, see https://go.microsoft.com/fwlink/?LinkID=717803
+            
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            // For more information on protecting this API from Cross Site Request Forgery (CSRF) attacks, see https://go.microsoft.com/fwlink/?LinkID=717803
+            
         }
     }
 }
