@@ -25,17 +25,17 @@ namespace B2BApi.DbContext
         public DbSet<Handler> Handlers { get; set; }
         public DbSet<Provider> Providers { get; set; }
        
-        // helpers
-//        public DbSet<Provider> Providers { get; set; }
         
-//        protected override void OnModelCreating(ModelBuilder modelBuilder)
-//        {
-//            // Product
-////            modelBuilder.ApplyConfiguration(new ProductConfiguration());
-////            modelBuilder.ApplyConfiguration(new PriceConfiguration());
-////            modelBuilder.ApplyConfiguration(new CompetitorsPricesConfiguration());
-////            modelBuilder.ApplyConfiguration(new CompetitorsUriConfiguration());
-//        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Handler
+            modelBuilder.Entity<Handler>()
+                .HasOne(p => p.Provider)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            
+        }
         
     }
 }
