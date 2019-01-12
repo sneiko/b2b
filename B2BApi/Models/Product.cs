@@ -25,29 +25,4 @@ namespace B2BApi.Models
         public ICollection<CompetitorsUri> CompetitorsUri { get; set; } 
         public ICollection<AttributeRow> Attribute { get; set; }
     }
-    
-//    public class ProductConfiguration : IEntityTypeConfiguration<Product>
-//    {
-//        public void Configure(EntityTypeBuilder<Product> builder)
-//        {
-//            builder.HasKey(x => x.Id);
-//            
-//            builder.Property(x => x.Model);
-//            builder.Property(x => x.PartNumber);
-//            builder.Property(x => x.Gtin);
-//            builder.Property(x => x.ProducerUri);
-//            builder.Property(x => x.Price);
-//            builder.Property(x => x.CompetitorsPrices);
-//            builder.Property(x => x.CompetitorsUri);
-//            builder.Property(x => x.UpdateTime)
-//                .HasConversion(new DateTimeToStringConverter());
-//            
-//            builder.HasOne<Brand>(x => x.Brand);
-//            builder.HasOne<BrandType>(x => x.BrandType);
-//            builder.HasOne<Category>(x => x.Category);
-//            
-//            builder.HasMany<StockProduct>(x => x.Stocks);
-//            builder.HasMany<ProductAttribute>(x => x.Attribute);
-//        }
-//    }
 }
