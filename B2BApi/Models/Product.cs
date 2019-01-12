@@ -1,13 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using B2BApi.Models.Enum;
 using B2BApi.Models.Helpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace B2BApi.Models
 {   
@@ -29,7 +23,7 @@ namespace B2BApi.Models
         public ICollection<Price> Price { get; set; }
         public ICollection<CompetitorsPrices> CompetitorsPrices { get; set; } 
         public ICollection<CompetitorsUri> CompetitorsUri { get; set; } 
-        public ICollection<ProductAttribute> Attribute { get; set; }
+        public ICollection<AttributeRow> Attribute { get; set; }
     }
     
 //    public class ProductConfiguration : IEntityTypeConfiguration<Product>
