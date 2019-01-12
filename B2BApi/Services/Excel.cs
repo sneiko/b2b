@@ -23,7 +23,6 @@ namespace B2BApi.Services
             {
                 var dtData = dataSet.Tables[0];
                 return dtData.Rows[id][4].ToString();
-                // Do Something
             }
 
             return dataSet.Tables.Count;
