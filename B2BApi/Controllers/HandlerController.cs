@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using B2BApi.DbContext;
@@ -13,39 +14,55 @@ namespace B2BApi.Controllers
     [ApiController]
     public class HandlerController : Controller
     {
-        // GET api/handler
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public ResultObject Get()
+        public ActionResult<ResultObject> Get()
         {
-            using (var context = new B2BDbContext())
+            try
             {
-                var handlers = context.Handlers
-                    .ToList();
-                
-                return new ResultObject
+                using (var context = new B2BDbContext())
                 {
-                    Result = handlers
-                };
+                    var handlers = context.Handlers.ToList();
+
+                    return new ResultObject
+                    {
+                        Result = handlers
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 
 
         // GET api/handler/{id}
         [HttpGet("{id}")]
-        public ResultObject Get(int id)
+        public ActionResult<ResultObject> Get(int id)
         {
-            using (var context = new B2BDbContext())
+            try
             {
-                var handler = context.Handlers
-                    .Include(p => p.GrabColumnItems)
-                    .Include(s => s.GrabColumnItems)
-                    .Include( p => p.Provider)
-                    .Single(i => i.Id == id);
-                
-                return new ResultObject
+                using (var context = new B2BDbContext())
                 {
-                    Result = handler
-                };
+                    var handler = context.Handlers
+                        .Include(p => p.GrabColumnItems)
+                        .Include(s => s.GrabColumnItems)
+                        .Include(p => p.Provider)
+                        .Single(i => i.Id == id);
+
+                    return new ResultObject
+                    {
+                        Result = handler
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 
@@ -53,32 +70,55 @@ namespace B2BApi.Controllers
         [HttpPost]
         public async Task<ActionResult> PostTodoItem(Handler handler)
         {
-            using (var context = new B2BDbContext())
-            {
-                context.Handlers.Add(handler);
-                await context.SaveChangesAsync();
-                return Ok();
-            }
-             
-        }
-
-        // PUT api/handler/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, Handler handler)
-        {
-            if (id == handler.Id)
+            try
             {
                 using (var context = new B2BDbContext())
                 {
-                    // todo: затестить обновляются ли данные
-                    context.Handlers.Update(handler);
+                    context.Handlers.Add(handler);
                     await context.SaveChangesAsync();
                     return Ok();
                 }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Update handler data
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="handler"></param>
+        /// <returns>Task status</returns>
+        /// <response code="200">Item is update</response>
+        /// <response code="400">If the item is null</response> 
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult> Put(int id, Handler handler)
+        {
+            try
+            {
+                if (id == handler.Id)
+                {
+                    using (var context = new B2BDbContext())
+                    {
+                        // todo: затестить обновляются ли данные
+                        context.Handlers.Update(handler);
+                        await context.SaveChangesAsync();
+                        return Ok();
+                    }
+                }
+                else
+                {
+                    return NotFound("Invalid handler 'Id' field");
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 
@@ -86,12 +126,19 @@ namespace B2BApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            using (var context = new B2BDbContext())
+            try
             {
-                var handler = context.Handlers.Single(i => i.Id == id);
-                context.Remove(handler);
-                await context.SaveChangesAsync();
-                return Ok();
+                using (var context = new B2BDbContext())
+                {
+                    var handler = context.Handlers.Single(i => i.Id == id);
+                    context.Remove(handler);
+                    await context.SaveChangesAsync();
+                    return Ok();
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }
