@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using B2BApi.Models;
 using B2BApi.Models.Enum;
 using B2BApi.Models.Helpers;
@@ -26,10 +28,10 @@ namespace B2BApi.Services
                 GrabColumnItems = new List<GrabColumnItem>
                 {
                     new GrabColumnItem{Id = 1, GrabColumn = GrabColumn.Model, Value = 4},
-                    new GrabColumnItem{Id = 1, GrabColumn = GrabColumn.Brand, Value = 7},
-                    new GrabColumnItem{Id = 1, GrabColumn = GrabColumn.PartNumber, Value = 3},
-                    new GrabColumnItem{Id = 1, GrabColumn = GrabColumn.Price, Value = 11},
-                    new GrabColumnItem{Id = 1, GrabColumn = GrabColumn.Count, Value = 8}
+                    new GrabColumnItem{Id = 2, GrabColumn = GrabColumn.Brand, Value = 7},
+                    new GrabColumnItem{Id = 3, GrabColumn = GrabColumn.PartNumber, Value = 3},
+                    new GrabColumnItem{Id = 4, GrabColumn = GrabColumn.Price, Value = 11},
+                    new GrabColumnItem{Id = 5, GrabColumn = GrabColumn.Count, Value = 8}
                 }
             };
 
@@ -49,22 +51,45 @@ namespace B2BApi.Services
                         UseHeaderRow = false // Use first row is ColumnName here :D
                     }
                 });
-                if (dataSet.Tables.Count > 0)
-                {
-                    DataSet nDataSet = new DataSet();
-                    nDataSet.Tables.Add("out");
-                    
-                    foreach (var h in handler.GrabColumnItems)
-                    {
-                        nDataSet.Tables[0].Columns.Add(dataSet.Tables[0].Columns[h.Value]);
-                    }
-                    
-                    return nDataSet;
-                }
+                
+                if (dataSet.Tables.Count > 0)                    
+                    return DeleteColumns(handler, dataSet.Tables[0]); 
 
 
-                return dataSet.Tables.Count;
+                return null;
             }
+        }
+
+        private static DataTable DeleteColumns(Handler handler, DataTable dataTable)
+        {
+            foreach (DataColumn c in dataTable.Columns)
+            {
+                int index = int.Parse(c.ColumnName.Replace("Column", ""));
+                bool grab = handler.GrabColumnItems.Any(x => x.Value == index);
+                if (grab == false)
+                {
+                    dataTable.Columns.Remove(c.ColumnName);
+                    DeleteColumns(handler, dataTable);
+                    break;
+                }
+            }
+
+            return dataTable;
+        }
+
+        private static DataSet ReplacePatterns(ICollection<Pattern> patterns, DataTable dataTable)
+        {
+            foreach (Pattern pattern in patterns)
+            {
+
+                foreach (DataRow dataTableRow in dataTable.Rows)
+                {
+                    dataTableRow[pattern.ColumnId] = dataTableRow[pattern.ColumnId].ToString()
+                        .Replace(pattern.Old, pattern.New);
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace B2BApi.Models
 
         public Provider Provider { get; set; }
        
+        public ICollection<Pattern> Patterns { get; set; }
         public ICollection<GrabColumnItem> GrabColumnItems { get; set; }
         public ICollection<HandlerSettings> Settings { get; set; }
 
