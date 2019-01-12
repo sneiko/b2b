@@ -10,12 +10,12 @@
         <e p="B2BDbContext.cs" t="Include" />
         <e p="Bin" t="ExcludeRecursive" />
         <e p="Controllers" t="Include">
-          <e p="ValuesController.cs" t="Include" />
+          <e p="TestController.cs" t="Include" />
         </e>
         <e p="Core" t="Include" />
         <e p="Migrations" t="Include">
-          <e p="20190112000420_CreateModels.cs" t="Include" />
-          <e p="20190112000420_CreateModels.Designer.cs" t="Include" />
+          <e p="20190112001412_0001_CreateModels.cs" t="Include" />
+          <e p="20190112001412_0001_CreateModels.Designer.cs" t="Include" />
           <e p="B2BDbContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="Models" t="Include">

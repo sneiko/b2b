@@ -2,21 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using B2BApi.DbContext;
+using B2BApi.Models;
+using B2BApi.Models.Enum;
+using B2BApi.Models.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace B2BApi.Controllers
 {
 //    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class TestController : ControllerBase
     {
         // GET api/values
         [HttpGet]
         public ActionResult<string> Get()
         {
-            return new JsonResult(new string[] {"1233", "2", "3"});
+            using (var context = new B2BDbContext())
+            {
+                var product = context.Products
+                        .Include(price => price.Price)
+                        .Single(x => x.Id == 1);
+                
+                return new JsonResult(product);
+            }
         }
 
         // GET api/values/5
