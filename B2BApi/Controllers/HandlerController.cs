@@ -1,12 +1,16 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using B2BApi.DbContext;
 using B2BApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace B2BApi.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class HandlerController : Controller
     {
         // GET api/handler
@@ -16,9 +20,6 @@ namespace B2BApi.Controllers
             using (var context = new B2BDbContext())
             {
                 var handlers = context.Handlers
-//                    .Include(p => p.PriceColumnItems)
-//                    .Include(s => s.PriceColumnItems)
-                    .Include(p => p.Provider)
                     .ToList();
                 
                 return new ResultObject
@@ -50,10 +51,13 @@ namespace B2BApi.Controllers
 
         // POST api/handler
         [HttpPost]
-        public void Post([FromBody] Handler handler)
+        public void Post([FromBody] string json)
         {
+            Console.WriteLine("JSON INPUT :::: " + json);
             using (var context = new B2BDbContext())
             {
+                Handler handler = JsonConvert.DeserializeObject<Handler>(json);
+                
                 context.Add(handler);
                 context.SaveChanges();
             }
@@ -61,8 +65,9 @@ namespace B2BApi.Controllers
 
         // PUT api/handler/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Handler handler)
+        public ActionResult Put(int id, [FromBody] string json)
         {
+            Handler handler = (Handler) JsonConvert.DeserializeObject(json);
             if (id == handler.Id)
             {
                 using (var context = new B2BDbContext())

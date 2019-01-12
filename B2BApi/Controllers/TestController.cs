@@ -10,6 +10,7 @@ using B2BApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace B2BApi.Controllers
 {
@@ -49,7 +50,14 @@ namespace B2BApi.Controllers
         [HttpPost]
         public void Post([FromBody] string value)
         {
-            
+            Console.WriteLine("JSON INPUT :::: " + value);
+//            using (var context = new B2BDbContext())
+//            {
+//                Handler handler = JsonConvert.DeserializeObject<Handler>(value);
+//                
+//                context.Add(handler);
+//                context.SaveChanges();
+//            }
         }
 
         // PUT api/values/5
