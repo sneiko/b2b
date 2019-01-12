@@ -122,10 +122,10 @@ namespace B2BApi.Controllers
         /// <returns>Task status</returns>
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
-        [HttpPost]
+        [HttpPost("AddMass")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Post(List<Product> products)
+        public async Task<ActionResult> MassAdd(List<Product> products)
         {
             try
             {
