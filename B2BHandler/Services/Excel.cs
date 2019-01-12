@@ -1,10 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using B2BApi.Models;
 using B2BApi.Models.Enum;
 using B2BApi.Models.Helpers;
@@ -17,11 +19,11 @@ namespace B2BApi.Services
         public object Parse(int handlerId)
         {
             #region TestData
-            
+
             Handler handler = new Handler{Id = 1,
                 Name = "Sosiska", 
                 Url = "https://www.dropbox.com/s/kv5bx2ncfz8bzhn/%D0%9D%D0%B0%D0%B4%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5%20%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B.xls?dl=1",
-                SaveFileName = "C:\\Temp\\price.xls",
+                SaveFileName = "C:\\Temp\\pochinki",
                 StartRowData = 1,
                 LastUpdate = DateTime.Now,
                 Provider = new Provider(),
@@ -34,14 +36,30 @@ namespace B2BApi.Services
                     new GrabColumnItem{Id = 5, GrabColumn = GrabColumn.Count, Value = 8}
                 }
             };
+            var patterns = new List<Pattern>
+            {
+                new Pattern{ Id = 1, ColumnId = 3, Old = "н", New = "0"},
+                new Pattern{ Id = 2, ColumnId = 3, Old = "м", New = "5"},
+                new Pattern{ Id = 3, ColumnId = 3, Old = "c", New = "10"},
+                new Pattern{ Id = 4, ColumnId = 3, Old = "б", New = "50"}
+            };
 
             #endregion
 
+            Regex re = new Regex("(\\.(xlsx|xls|csv))");
+
+            if (!re.IsMatch(handler.Url))
+                return null;
+            
+            string fileExtension = re.Match(handler.Url).Groups[1].Value;
+            
             using (WebClient wc = new WebClient())
             {
-                wc.DownloadFile(new Uri(handler.Url), handler.SaveFileName);
+                wc.DownloadFile(new Uri(handler.Url), handler.SaveFileName + fileExtension);
             }
-            using (FileStream stream = new FileStream(handler.SaveFileName, FileMode.Open, FileAccess.Read))
+
+            
+            using (FileStream stream = new FileStream(handler.SaveFileName + fileExtension, FileMode.Open, FileAccess.Read))
             {
                 IExcelDataReader excelDataReader = ExcelReaderFactory.CreateReader(stream);
                 DataSet dataSet = excelDataReader.AsDataSet(new ExcelDataSetConfiguration
@@ -51,9 +69,12 @@ namespace B2BApi.Services
                         UseHeaderRow = false // Use first row is ColumnName here :D
                     }
                 });
-                
-                if (dataSet.Tables.Count > 0)                    
-                    return DeleteColumns(handler, dataSet.Tables[0]); 
+
+                if (dataSet.Tables.Count > 0)
+                {
+                    var dataTable =  DeleteColumns(handler, dataSet.Tables[0]);
+                    return ReplacePatterns(patterns, dataTable);
+                }
 
 
                 return null;
@@ -77,19 +98,19 @@ namespace B2BApi.Services
             return dataTable;
         }
 
-        private static DataSet ReplacePatterns(ICollection<Pattern> patterns, DataTable dataTable)
+        private static DataTable ReplacePatterns(ICollection<Pattern> patterns, DataTable dataTable)
         {
-            foreach (Pattern pattern in patterns)
+            foreach (DataRow dataTableRow in dataTable.Rows)
             {
-
-                foreach (DataRow dataTableRow in dataTable.Rows)
+                foreach (Pattern pattern in patterns)
                 {
                     dataTableRow[pattern.ColumnId] = dataTableRow[pattern.ColumnId].ToString()
                         .Replace(pattern.Old, pattern.New);
                 }
+                
             }
 
-            return null;
+            return dataTable;
         }
     }
 }
