@@ -89,6 +89,33 @@ namespace B2BApi.Controllers
         }
 
         /// <summary>
+        /// Add new product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns>Task status</returns>
+        /// <response code="200">Item is update</response>
+        /// <response code="400">If the item is null</response> 
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> Post(Product product)
+        {
+            try
+            {
+                using (var context = new B2BDbContext())
+                {
+                    context.Products.Add(product);
+                    await context.SaveChangesAsync();
+                    return Ok();
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
         /// Mass add new product
         /// </summary>
         /// <param name="product"></param>
