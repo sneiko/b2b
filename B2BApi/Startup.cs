@@ -4,12 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using B2BApi.DbContext;
 using B2BApi.Extensions;
+using B2BApi.Models;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -38,18 +42,27 @@ namespace B2BApi
             
             services.AddConfigurations(Configuration);
             services.AddSwagger();
+            
+            // MARK - Hangfire
+            services.AddHangfire(opt => opt.UseMemoryStorage());
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwaggerConfiguration();
-            }
-            else
-            {
+                
+                // MARK - Hangfire
+                GlobalConfiguration.Configuration
+                    .UseActivator(new HangfireActivator(serviceProvider));
+                app.UseHangfireDashboard();
+                app.UseHangfireServer();  
+                
+            } else {
                 app.UseHsts();
             }
 
