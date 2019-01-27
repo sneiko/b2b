@@ -5,7 +5,7 @@ using B2BApi.ViewModels;
 
 namespace B2BApi.Intrefaces
 {
-    public interface IAuthorizationService
+    public interface IAuthorizService
     {
         Task<ServiceResult<User>> AuthorizeAsync(AuthorizeFormModel formModel);
         

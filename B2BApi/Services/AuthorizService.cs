@@ -10,12 +10,12 @@ using B2BApi.ViewModels;
 
 namespace B2BApi.Services
 {
-    public class AuthorizationService : IAuthorizationService
+    public class AuthorizService : IAuthorizService
     {
         private readonly IHashProvider _hashProvider;
         private readonly IUsersRepository _usersRepository;
 
-        public AuthorizationService(IHashProvider hashProvider, IUsersRepository usersRepository)
+        public AuthorizService(IHashProvider hashProvider, IUsersRepository usersRepository)
         {
             _hashProvider = hashProvider;
             _usersRepository = usersRepository;

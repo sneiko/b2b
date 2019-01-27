@@ -9,7 +9,6 @@ using B2BApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using IAuthorizationService = B2BApi.Intrefaces.IAuthorizationService;
 
 namespace B2BApi.Controllers
 {
@@ -17,11 +16,11 @@ namespace B2BApi.Controllers
     [Route("api/v1/[area]/[controller]")]
     public class AuthorizationController : ControllerApi
     {
-        private readonly IAuthorizationService _authorizeService;
+        private readonly IAuthorizService _authorizeService;
         private readonly IDateTimeProvider _date;
         private readonly JwtConfiguration _configuration;
         
-        public AuthorizationController(IAuthorizationService authorizeService,  IDateTimeProvider date, 
+        public AuthorizationController(IAuthorizService authorizeService,  IDateTimeProvider date, 
             IOptions<JwtConfiguration> configuration)
         {
             _authorizeService = authorizeService;
