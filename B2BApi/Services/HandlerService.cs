@@ -20,6 +20,27 @@ namespace B2BApi.Services
 {
     public class HandlerService: IHandlerService
     {
+        protected readonly IHandlerRepository HandlerRepository;
+
+        public HandlerService(IHandlerRepository handlerRepository)
+        {
+            HandlerRepository = handlerRepository;
+        }
+
+        public async Task<ServiceResult<Handler>> GetHandlerAsync(int handlerId)
+        {
+            try
+            {
+                var handler = await HandlerRepository.GetHandlerAsync(handlerId);
+                
+                return new ServiceResult<Handler>(handler, ResultStatus.Success);
+            }
+            catch (Exception e)
+            {
+                return new ServiceResult<Handler>(null, ResultStatus.Fail, "Сервис недоступен");
+            }
+        }
+
         public async Task<ServiceResult> Start(int handlerId)
         {
             #region TestData
@@ -49,54 +70,69 @@ namespace B2BApi.Services
             };
 
             #endregion
-
-            var re = new Regex("(\\.(xlsx|xls|csv))");
-
-            if (!re.IsMatch(handler.Url))
-                return null;
             
-            string fileExtension = re.Match(handler.Url).Groups[1].Value;
-            
-            using (var wc = new WebClient())
+            try
             {
-                wc.DownloadFileAsync(new Uri(handler.Url), handler.SaveFileName + fileExtension);
-            }
+                var re = new Regex("(\\.(xlsx|xls|csv))");
 
+                if (!re.IsMatch(handler.Url))
+                    return null;
             
-            using (var stream = new FileStream(handler.SaveFileName + fileExtension, FileMode.Open, FileAccess.Read))
-            {
-                IExcelDataReader excelDataReader = ExcelReaderFactory.CreateReader(stream);
-                DataSet dataSet = excelDataReader.AsDataSet(new ExcelDataSetConfiguration
+                string fileExtension = re.Match(handler.Url).Groups[1].Value;
+            
+                using (var wc = new WebClient())
                 {
-                    ConfigureDataTable = _ => new ExcelDataTableConfiguration
-                    {
-                        UseHeaderRow = false // Use first row is ColumnName here :D
-                    }
-                });
-
-                if (dataSet.Tables.Count > 0)
-                {
-                    var dataTable = DeleteColumns(handler, dataSet.Tables[0]);
-                    //return ReplacePatterns(patterns, dataTable);
-                    return new ServiceResult(ResultStatus.Success);
+                    wc.DownloadFile(new Uri(handler.Url), handler.SaveFileName + fileExtension);
                 }
 
 
-                return null;
+                using (var stream = new FileStream(handler.SaveFileName + fileExtension, FileMode.Open, FileAccess.Read))
+                {
+                    IExcelDataReader excelDataReader = ExcelReaderFactory.CreateReader(stream);
+                    DataSet dataSet = excelDataReader.AsDataSet(new ExcelDataSetConfiguration
+                    {
+                        ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                        {
+                            UseHeaderRow = false // Use first row is ColumnName here :D
+                        }
+                    });
+
+                    if (dataSet.Tables.Count > 0)
+                    {
+                        var dataTable = DeleteColumns(handler, dataSet.Tables[0]);
+                        //return ReplacePatterns(patterns, dataTable);
+                        return new ServiceResult(ResultStatus.Success);
+                    }
+                }
+                return new ServiceResult(ResultStatus.Fail, "");
             }
+            catch (Exception e)
+            {
+                return new ServiceResult(ResultStatus.Fail, "Не удалось обработать прайс");
+            }
+
+            
         }
 
         private static  DataTable DeleteColumns(Handler handler, DataTable dataTable)
         {
             foreach (DataColumn c in dataTable.Columns)
             {
-                int index = int.Parse(c.ColumnName.Replace("Column", ""));
+                int index;
+                if (!Int32.TryParse(c.ColumnName.Replace("Column", ""), out index))
+                    continue;
+                
                 bool grab = handler.GrabColumnItems.Any(x => x.Value == index);
                 if (grab == false)
                 {
                     dataTable.Columns.Remove(c.ColumnName);
                     DeleteColumns(handler, dataTable);
                     break;
+                }
+                else
+                {
+                    var newColumnName = handler.GrabColumnItems.First(x => x.Value == index);
+                    dataTable.Columns[c.ColumnName].ColumnName = newColumnName.GrabColumn.ToString();
                 }
             }
 
