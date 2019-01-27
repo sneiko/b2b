@@ -42,6 +42,7 @@ namespace B2BApi
                     Title = "B2B Api Microservice",
                     Version = "v1"
                 });
+                c.IncludeXmlComments(GetXmlCommentsPath());
             });
         }
 
@@ -66,6 +67,11 @@ namespace B2BApi
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+        }
+        
+        private static string GetXmlCommentsPath()
+        {
+            return String.Format(@"{0}/B2BApi.xml", AppDomain.CurrentDomain.BaseDirectory);
         }
     }
 }

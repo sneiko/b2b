@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using B2BApi.DbContext;
 using B2BApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace B2BApi.Controllers
 {
@@ -17,9 +15,9 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Get all handlers
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Handler list array</returns>
         /// <response code="200">Handler List</response>
-        /// <response code="400">If the items is null</response> 
+        /// <response code="400">If the items is null</response>
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -47,7 +45,7 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Get handler by ID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Handler ID</param>
         /// <returns>Return handler object by ID</returns>
         /// <response code="200">Handler data</response>
         /// <response code="400">If the item is null</response> 
@@ -81,7 +79,7 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Add new handler
         /// </summary>
-        /// <param name="handler"></param>
+        /// <param name="handler">Handler object</param>
         /// <returns>Task status</returns>
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
@@ -108,8 +106,8 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Update handler data
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="handler"></param>
+        /// <param name="id">Handler ID</param>
+        /// <param name="handler">New handler object</param>
         /// <returns>Task status</returns>
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
@@ -143,8 +141,15 @@ namespace B2BApi.Controllers
             }
         }
 
-        // DELETE api/handler/5
+        /// <summary>
+        /// Delete handler by ID
+        /// </summary>
+        /// <param name="id">Handler ID</param>
+        /// <response code="200">Item is delete</response>
+        /// <response code="400">If the item is null</response> 
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
             try

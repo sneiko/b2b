@@ -16,7 +16,7 @@ namespace B2BApi.Controllers
          /// <summary>
         /// Get all products
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Product list array</returns>
         /// <response code="200">Handler List</response>
         /// <response code="400">If the items is null</response> 
         [HttpGet]
@@ -52,7 +52,7 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Get product by ID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Product ID</param>
         /// <returns>Return product object by ID</returns>
         /// <response code="200">Product data</response>
         /// <response code="400">If the item is null</response> 
@@ -91,7 +91,7 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Add new product
         /// </summary>
-        /// <param name="product"></param>
+        /// <param name="product">Product ID</param>
         /// <returns>Task status</returns>
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
@@ -118,7 +118,7 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Mass add new product
         /// </summary>
-        /// <param name="product"></param>
+        /// <param name="product">Product ID</param>
         /// <returns>Task status</returns>
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
@@ -148,8 +148,8 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Update product data
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="product"></param>
+        /// <param name="id">Product ID</param>
+        /// <param name="product">New product object</param>
         /// <returns>Task status</returns>
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
@@ -186,7 +186,7 @@ namespace B2BApi.Controllers
         /// <summary>
         /// Delete product
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Product ID</param>
         /// <returns>Status</returns>
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
