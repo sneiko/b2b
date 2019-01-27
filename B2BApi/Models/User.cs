@@ -4,9 +4,10 @@ using Newtonsoft.Json;
 
 namespace B2BApi.Models
 {
-    public class User
+    public abstract class User
     {
-        [Key] public int Id { get; }
+        public int Id { get; set; }
+        
         public string UserName { get; set; }
         public UserRole Role { get; set; }
         public UserStatus Status { get; set; }

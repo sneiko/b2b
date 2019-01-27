@@ -39,14 +39,24 @@ namespace B2BApi.Extensions
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey
                 });
-                
-                var security = new OpenApiSecurityRequirement()
-                {
+
+                var security =
+                    new OpenApiSecurityRequirement
                     {
-                        new OpenApiSecurityScheme() { BearerFormat = "Bearer" }, 
-                        new string[] { }
-                    },
-                };
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                },
+                                UnresolvedReference = true
+                            },
+                            new List<string>()
+                        }
+                    };
+               
                 c.AddSecurityRequirement(security);
                 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

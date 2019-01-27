@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using B2BApi.Controllers.Base;
 using B2BApi.DbContext;
+using B2BApi.Helpers;
 using B2BApi.Intrefaces;
 using B2BApi.Models;
 using B2BApi.ViewModels;
@@ -11,10 +13,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace B2BApi.Controllers
 {
-    [Area("Admin")]
+    [Area("Common")]
     [Route("api/v1/[area]/[controller]")]
     [Authorize(Roles = "Admin, Manager, Director")]
-    public class HandlerController : Controller
+    public class HandlerController : ControllerAuthorizeApi
     {
         private readonly IHandlerService _handlerService;
 
@@ -23,6 +25,7 @@ namespace B2BApi.Controllers
             _handlerService = handlerService;
         }
 
+        /*
         /// <summary>
         /// Get all handlers
         /// </summary>
@@ -51,6 +54,7 @@ namespace B2BApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+*/
 
 
         /// <summary>
@@ -65,8 +69,13 @@ namespace B2BApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Get(int id)
         {
+            if (!Request.TryGetUserId(out var userId))
+            {
+                return StatusCode(403, "Токен протух");
+            }
             return Ok(await _handlerService.GetHandlerAsync(id));
         }
+/*
 
         /// <summary>
         /// Add new handler
@@ -93,9 +102,9 @@ namespace B2BApi.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
+        }*/
 
-        /// <summary>
+        /*/// <summary>
         /// Update handler data
         /// </summary>
         /// <param name="id">Handler ID</param>
@@ -132,8 +141,9 @@ namespace B2BApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+*/
 
-        /// <summary>
+/*        /// <summary>
         /// Delete handler by ID
         /// </summary>
         /// <param name="id">Handler ID</param>
@@ -158,7 +168,7 @@ namespace B2BApi.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
+        }*/
 
         /// <summary>
         /// Delete handler by ID

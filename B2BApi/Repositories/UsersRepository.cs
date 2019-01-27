@@ -11,7 +11,7 @@ namespace B2BApi.Repositories
 {
     public class UsersRepository : BaseRepository, IUsersRepository
     {
-        UsersRepository(B2BDbContext context) : base(context)
+        public UsersRepository(B2BDbContext context) : base(context)
         {
             
         }
