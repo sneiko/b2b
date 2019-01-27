@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using B2BApi.DbContext;
 using B2BApi.Intrefaces;
 using B2BApi.Models;
+using B2BApi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ namespace B2BApi.Controllers
     [Route("api/v1/[area]/[controller]")]
     [Authorize(Roles = "Admin, Manager, Director")]
     public class HandlerController : Controller
-    {   
+    {
         private readonly IHandlerService _handlerService;
 
         public HandlerController(IHandlerService handlerService)
@@ -60,30 +61,11 @@ namespace B2BApi.Controllers
         /// <response code="200">Handler data</response>
         /// <response code="400">If the item is null</response> 
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult<Handler>), 200)]
         [ProducesResponseType(400)]
-        public ActionResult<ResultObject> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                using (var context = new B2BDbContext())
-                {
-                    var handler = context.Handlers
-                        .Include(p => p.GrabColumnItems)
-                        .Include(s => s.GrabColumnItems)
-                        .Include(p => p.Provider)
-                        .Single(i => i.Id == id);
-
-                    return new ResultObject
-                    {
-                        Result = handler
-                    };
-                }
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _handlerService.GetHandlerAsync(id));
         }
 
         /// <summary>
@@ -177,7 +159,7 @@ namespace B2BApi.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
+
         /// <summary>
         /// Delete handler by ID
         /// </summary>
