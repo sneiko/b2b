@@ -38,7 +38,6 @@ namespace B2BApi
             
             services.AddConfigurations(Configuration);
             services.AddSwagger();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +56,11 @@ namespace B2BApi
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+        }
+        
+        private static string GetXmlCommentsPath()
+        {
+            return String.Format(@"{0}/B2BApi.xml", AppDomain.CurrentDomain.BaseDirectory);
         }
     }
 }
