@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using B2BApi.EntityConfigurations;
 using B2BApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -24,6 +25,7 @@ namespace B2BApi.DbContext
         public DbSet<StockProduct> StockProducts { get; set; }
         public DbSet<Handler> Handlers { get; set; }
         public DbSet<Provider> Providers { get; set; }
+        public DbSet<User> Users { get; set; }
        
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,7 +36,8 @@ namespace B2BApi.DbContext
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
             
-            
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new CredentialConfiguration());
         }
         
     }
