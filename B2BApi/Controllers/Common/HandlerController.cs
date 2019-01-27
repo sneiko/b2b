@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using B2BApi.DbContext;
 using B2BApi.Intrefaces;
 using B2BApi.Models;
+using B2BApi.Models.Enum;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
@@ -104,6 +106,12 @@ namespace B2BApi.Controllers
                 {
                     context.Handlers.Add(handler);
                     await context.SaveChangesAsync();
+                    
+                    // Set task by timeSpan from handler
+                    BackgroundJob.Schedule(
+                        () => Patch(handler.Id),
+                        handler.HandlerScheduler);
+                    
                     return Ok();
                 }
             }
@@ -134,6 +142,15 @@ namespace B2BApi.Controllers
                 {
                     using (var context = new B2BDbContext())
                     {
+                        // Check if work
+                        HandlerStatus status = context.Handlers.Single(i => i.Id == id).Status;
+                        if (status == HandlerStatus.Work) return Conflict("Handler in work!");
+                        
+                        // Set task by timeSpan from handler
+                        BackgroundJob.Schedule(
+                            () => Patch(handler.Id),
+                            handler.HandlerScheduler);
+                        
                         // todo: затестить обновляются ли данные
                         context.Handlers.Update(handler);
                         await context.SaveChangesAsync();
@@ -178,11 +195,12 @@ namespace B2BApi.Controllers
             }
         }
         
+        
         /// <summary>
-        /// Delete handler by ID
+        /// Start handler by ID
         /// </summary>
         /// <param name="id">Handler ID</param>
-        /// <response code="200">Item is delete</response>
+        /// <response code="200">Handler started</response>
         /// <response code="400">If the item is null</response> 
         [HttpPatch("{id}")]
         [ProducesResponseType(200)]

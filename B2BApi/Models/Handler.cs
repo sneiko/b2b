@@ -26,7 +26,8 @@ namespace B2BApi.Models
         public ICollection<Pattern> Patterns { get; set; }
         public ICollection<GrabColumnItem> GrabColumnItems { get; set; }
         public ICollection<HandlerSettings> Settings { get; set; }
-
+        
+        public TimeSpan HandlerScheduler { get; set; }
         public DateTime LastUpdate { get; set; }
     }
 }
