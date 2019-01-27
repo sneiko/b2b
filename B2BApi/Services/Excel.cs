@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using B2BApi.Models;
 using B2BApi.Models.Enum;
 using B2BApi.Models.Helpers;
@@ -16,11 +17,11 @@ namespace B2BApi.Services
 {
     public class Excel
     {
-        public object Parse(int handlerId)
+        public static async Task<object> Parse(Handler handler)
         {
             #region TestData
 
-            Handler handler = new Handler{Id = 1,
+            handler = new Handler{Id = 1,
                 Name = "Sosiska", 
                 Url = "https://www.dropbox.com/s/kv5bx2ncfz8bzhn/%D0%9D%D0%B0%D0%B4%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5%20%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B.xls?dl=1",
                 SaveFileName = "C:\\Temp\\pochinki",
@@ -46,20 +47,20 @@ namespace B2BApi.Services
 
             #endregion
 
-            Regex re = new Regex("(\\.(xlsx|xls|csv))");
+            var re = new Regex("(\\.(xlsx|xls|csv))");
 
             if (!re.IsMatch(handler.Url))
                 return null;
             
             string fileExtension = re.Match(handler.Url).Groups[1].Value;
             
-            using (WebClient wc = new WebClient())
+            using (var wc = new WebClient())
             {
-                wc.DownloadFile(new Uri(handler.Url), handler.SaveFileName + fileExtension);
+                wc.DownloadFileAsync(new Uri(handler.Url), handler.SaveFileName + fileExtension);
             }
 
             
-            using (FileStream stream = new FileStream(handler.SaveFileName + fileExtension, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(handler.SaveFileName + fileExtension, FileMode.Open, FileAccess.Read))
             {
                 IExcelDataReader excelDataReader = ExcelReaderFactory.CreateReader(stream);
                 DataSet dataSet = excelDataReader.AsDataSet(new ExcelDataSetConfiguration
@@ -72,7 +73,7 @@ namespace B2BApi.Services
 
                 if (dataSet.Tables.Count > 0)
                 {
-                    var dataTable =  DeleteColumns(handler, dataSet.Tables[0]);
+                    var dataTable = DeleteColumns(handler, dataSet.Tables[0]);
                     return ReplacePatterns(patterns, dataTable);
                 }
 
@@ -81,7 +82,7 @@ namespace B2BApi.Services
             }
         }
 
-        private static DataTable DeleteColumns(Handler handler, DataTable dataTable)
+        private static  DataTable DeleteColumns(Handler handler, DataTable dataTable)
         {
             foreach (DataColumn c in dataTable.Columns)
             {
@@ -101,14 +102,9 @@ namespace B2BApi.Services
         private static DataTable ReplacePatterns(ICollection<Pattern> patterns, DataTable dataTable)
         {
             foreach (DataRow dataTableRow in dataTable.Rows)
-            {
-                foreach (Pattern pattern in patterns)
-                {
-                    dataTableRow[pattern.ColumnId] = dataTableRow[pattern.ColumnId].ToString()
-                        .Replace(pattern.Old, pattern.New);
-                }
-                
-            }
+                foreach (var pattern in patterns)
+                    dataTableRow[pattern.ColumnId] =
+                        dataTableRow[pattern.ColumnId].ToString().Replace(pattern.Old, pattern.New);
 
             return dataTable;
         }

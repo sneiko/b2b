@@ -6,12 +6,22 @@
         <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\netcoreapp2.1\B2BApi.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\netcoreapp2.1\B2BApi.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
         <Folder Include="Core" />
         <Folder Include="wwwroot\" />
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="ExcelDataReader" Version="3.4.2" />
+        <PackageReference Include="ExcelDataReader.DataSet" Version="3.4.2" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />

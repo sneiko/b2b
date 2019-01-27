@@ -30,7 +30,7 @@ namespace B2BApi.Controllers
                 using (var context = new B2BDbContext())
                 {
                     var handlers = context.Handlers.ToList();
-
+                    
                     return new ResultObject
                     {
                         Result = handlers

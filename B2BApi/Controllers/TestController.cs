@@ -41,22 +41,15 @@ namespace B2BApi.Controllers
         [HttpGet("{handlerId}")]
         public ActionResult<string> Get(int handlerId)
         {
-            var e = new Excel();
-            var r = e.Parse(handlerId);
-            return new JsonResult(r);
+            return new JsonResult(handlerId);
         }
 
         // POST api/values
         [HttpPost]
         public async Task<ActionResult<Handler>> PostTodoItem(Handler handler)
         {
-            using (var context = new B2BDbContext())
-            {
-                context.Handlers.Add(handler);
-                await context.SaveChangesAsync();
-                return new JsonResult(handler);
-            }
-             
+            var r = Excel.Parse(handler);
+            return new JsonResult(r);
         }
 
         // PUT api/values/5
