@@ -42,6 +42,7 @@ namespace B2BApi
             
             services.AddConfigurations(Configuration);
             services.AddSwagger();
+            services.AddAJwtAuthentication(Configuration);
             
             // MARK - Hangfire
             services.AddHangfire(opt => opt.UseMemoryStorage());
@@ -66,6 +67,7 @@ namespace B2BApi
                 app.UseHsts();
             }
 
+            //app.UseSession();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
