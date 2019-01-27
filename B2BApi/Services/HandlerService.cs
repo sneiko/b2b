@@ -8,20 +8,23 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using B2BApi.Enums;
+using B2BApi.Intrefaces;
 using B2BApi.Models;
 using B2BApi.Models.Enum;
 using B2BApi.Models.Helpers;
+using B2BApi.ViewModels;
 using ExcelDataReader;
 
 namespace B2BApi.Services
 {
-    public class Excel
+    public class HandlerService: IHandlerService
     {
-        public static async Task<object> Parse(Handler handler)
+        public async Task<ServiceResult> Start(int handlerId)
         {
             #region TestData
 
-            handler = new Handler{Id = 1,
+            var handler = new Handler{Id = 1,
                 Name = "Sosiska", 
                 Url = "https://www.dropbox.com/s/kv5bx2ncfz8bzhn/%D0%9D%D0%B0%D0%B4%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5%20%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B.xls?dl=1",
                 SaveFileName = "C:\\Temp\\pochinki",
@@ -74,7 +77,8 @@ namespace B2BApi.Services
                 if (dataSet.Tables.Count > 0)
                 {
                     var dataTable = DeleteColumns(handler, dataSet.Tables[0]);
-                    return ReplacePatterns(patterns, dataTable);
+                    //return ReplacePatterns(patterns, dataTable);
+                    return new ServiceResult(ResultStatus.Success);
                 }
 
 

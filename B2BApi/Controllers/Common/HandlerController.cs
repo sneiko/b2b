@@ -2,16 +2,26 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using B2BApi.DbContext;
+using B2BApi.Intrefaces;
 using B2BApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace B2BApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Area("Admin")]
+    [Route("api/v1/[area]/[controller]")]
+    [Authorize(Roles = "Admin, Manager, Director")]
     public class HandlerController : Controller
-    {
+    {   
+        private readonly IHandlerService _handlerService;
+
+        public HandlerController(IHandlerService handlerService)
+        {
+            _handlerService = handlerService;
+        }
+
         /// <summary>
         /// Get all handlers
         /// </summary>
@@ -28,7 +38,7 @@ namespace B2BApi.Controllers
                 using (var context = new B2BDbContext())
                 {
                     var handlers = context.Handlers.ToList();
-                    
+
                     return new ResultObject
                     {
                         Result = handlers
@@ -166,6 +176,20 @@ namespace B2BApi.Controllers
             {
                 return BadRequest(e.Message);
             }
+        }
+        
+        /// <summary>
+        /// Delete handler by ID
+        /// </summary>
+        /// <param name="id">Handler ID</param>
+        /// <response code="200">Item is delete</response>
+        /// <response code="400">If the item is null</response> 
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult> Patch(int id)
+        {
+            return Ok(await _handlerService.Start(id));
         }
     }
 }
