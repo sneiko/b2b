@@ -12,7 +12,7 @@ namespace B2BApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : Controller
-    {
+    {/*
          /// <summary>
         /// Get all products
         /// </summary>
@@ -46,8 +46,9 @@ namespace B2BApi.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
+        }*/
 
+/*
 
         /// <summary>
         /// Get product by ID
@@ -209,6 +210,6 @@ namespace B2BApi.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
+        }*/
     }
 }

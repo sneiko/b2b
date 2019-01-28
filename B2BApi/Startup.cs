@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using B2BApi.DbContext;
 using B2BApi.Extensions;
+using B2BApi.Initializers;
 using B2BApi.Models;
 using Hangfire;
 using Hangfire.MemoryStorage;
@@ -33,7 +34,7 @@ namespace B2BApi
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             
             services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
@@ -41,12 +42,15 @@ namespace B2BApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             
             services.AddConfigurations(Configuration);
+         
             services.AddSwagger();
             services.AddAJwtAuthentication(Configuration);
+            services.AddDb(Configuration);
             
             // MARK - Hangfire
             services.AddHangfire(opt => opt.UseMemoryStorage());
             
+            return services.RegisterContainer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,10 +71,12 @@ namespace B2BApi
                 app.UseHsts();
             }
 
-            //app.UseSession();
+            
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+            
+            SeedData.EnsurePopulated(app);
         }
         
         private static string GetXmlCommentsPath()

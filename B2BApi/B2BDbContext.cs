@@ -10,6 +10,11 @@ namespace B2BApi.DbContext
 {
     public class B2BDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
+        public B2BDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=b2b.db");

@@ -1,22 +1,23 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using B2BApi.Controllers.Base;
 using B2BApi.DbContext;
+using B2BApi.Helpers;
 using B2BApi.Intrefaces;
 using B2BApi.Models;
-using B2BApi.Models.Enum;
-using Hangfire;
+using B2BApi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
 namespace B2BApi.Controllers
 {
-    [Area("Admin")]
+    [Area("Common")]
     [Route("api/v1/[area]/[controller]")]
     [Authorize(Roles = "Admin, Manager, Director")]
-    public class HandlerController : Controller
-    {   
+    public class HandlerController : ControllerAuthorizeApi
+    {
         private readonly IHandlerService _handlerService;
 
         public HandlerController(IHandlerService handlerService)
@@ -24,6 +25,7 @@ namespace B2BApi.Controllers
             _handlerService = handlerService;
         }
 
+        /*
         /// <summary>
         /// Get all handlers
         /// </summary>
@@ -52,6 +54,7 @@ namespace B2BApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+*/
 
 
         /// <summary>
@@ -62,31 +65,17 @@ namespace B2BApi.Controllers
         /// <response code="200">Handler data</response>
         /// <response code="400">If the item is null</response> 
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult<Handler>), 200)]
         [ProducesResponseType(400)]
-        public ActionResult<ResultObject> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                using (var context = new B2BDbContext())
-                {
-                    var handler = context.Handlers
-                        .Include(p => p.GrabColumnItems)
-                        .Include(s => s.GrabColumnItems)
-                        .Include(p => p.Provider)
-                        .Single(i => i.Id == id);
-
-                    return new ResultObject
-                    {
-                        Result = handler
-                    };
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _handlerService.GetHandlerAsync(id));
         }
+/*
 
         /// <summary>
         /// Add new handler
@@ -106,12 +95,6 @@ namespace B2BApi.Controllers
                 {
                     context.Handlers.Add(handler);
                     await context.SaveChangesAsync();
-                    
-                    // Set task by timeSpan from handler
-                    BackgroundJob.Schedule(
-                        () => Patch(handler.Id),
-                        handler.HandlerScheduler);
-                    
                     return Ok();
                 }
             }
@@ -119,9 +102,9 @@ namespace B2BApi.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
+        }*/
 
-        /// <summary>
+        /*/// <summary>
         /// Update handler data
         /// </summary>
         /// <param name="id">Handler ID</param>
@@ -142,15 +125,6 @@ namespace B2BApi.Controllers
                 {
                     using (var context = new B2BDbContext())
                     {
-                        // Check if work
-                        HandlerStatus status = context.Handlers.Single(i => i.Id == id).Status;
-                        if (status == HandlerStatus.Work) return Conflict("Handler in work!");
-                        
-                        // Set task by timeSpan from handler
-                        BackgroundJob.Schedule(
-                            () => Patch(handler.Id),
-                            handler.HandlerScheduler);
-                        
                         // todo: затестить обновляются ли данные
                         context.Handlers.Update(handler);
                         await context.SaveChangesAsync();
@@ -167,8 +141,9 @@ namespace B2BApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+*/
 
-        /// <summary>
+/*        /// <summary>
         /// Delete handler by ID
         /// </summary>
         /// <param name="id">Handler ID</param>
@@ -193,14 +168,13 @@ namespace B2BApi.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
-        
-        
+        }*/
+
         /// <summary>
-        /// Start handler by ID
+        /// Delete handler by ID
         /// </summary>
         /// <param name="id">Handler ID</param>
-        /// <response code="200">Handler started</response>
+        /// <response code="200">Item is delete</response>
         /// <response code="400">If the item is null</response> 
         [HttpPatch("{id}")]
         [ProducesResponseType(200)]
