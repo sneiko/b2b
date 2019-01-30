@@ -2,17 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using B2BApi.Controllers.Base;
 using B2BApi.DbContext;
+using B2BApi.Helpers;
+using B2BApi.Intrefaces;
 using B2BApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace B2BApi.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class ProductController : Controller
-    {/*
+    [Authorize(Roles = "Admin, Manager, Director")]
+    public class ProductController : ControllerAuthorizeApi
+    {
+        private readonly IProductService _productService;
+        public ProductController(IProductService productService)
+        {
+            _productService = productService;
+        }
+
+        
          /// <summary>
         /// Get all products
         /// </summary>
@@ -22,33 +33,16 @@ namespace B2BApi.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<ResultObject> Get()
+        public async Task<IActionResult> Get()
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                using (var context = new B2BDbContext())
-                {
-                    var products = context.Products
-                        .Include(p => p.Brand)
-                        .Include(p => p.Category)
-                        .Include(p => p.Price)
-                        .Include(p => p.Stocks)
-                        .Include(p => p.BrandType)
-                        .ToList();
-
-                    return new ResultObject
-                    {
-                        Result = products
-                    };
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }*/
+            return Ok(await _productService.GetProductListAsync());
+        }
 
-/*
+
 
         /// <summary>
         /// Get product by ID
@@ -60,33 +54,13 @@ namespace B2BApi.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<ResultObject> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                using (var context = new B2BDbContext())
-                {
-                    var product = context.Products
-                        .Include(p => p.Brand)
-                        .Include(p => p.Attribute)
-                        .Include(p => p.Category)
-                        .Include(p => p.Price)
-                        .Include(p => p.Stocks)
-                        .Include(p => p.BrandType)
-                        .Include(p => p.CompetitorsPrices)
-                        .Include(p => p.CompetitorsUri)
-                        .Single(i => i.Id == id);
-
-                    return new ResultObject
-                    {
-                        Result = product
-                    };
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _productService.GetProductAsync(id));
         }
 
         /// <summary>
@@ -99,51 +73,13 @@ namespace B2BApi.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Post(Product product)
+        public async Task<IActionResult> Post(Product product)
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                using (var context = new B2BDbContext())
-                {
-                    context.Products.Add(product);
-                    await context.SaveChangesAsync();
-                    return Ok();
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Mass add new product
-        /// </summary>
-        /// <param name="product">Product ID</param>
-        /// <returns>Task status</returns>
-        /// <response code="200">Item is update</response>
-        /// <response code="400">If the item is null</response> 
-        [HttpPost("AddMass")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> MassAdd(List<Product> products)
-        {
-            try
-            {
-                using (var context = new B2BDbContext())
-                {
-                    products.ForEach(product =>
-                    {
-                        context.Products.Add(product);    
-                    });
-                    await context.SaveChangesAsync();
-                    return Ok();
-                }
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _productService.AddProductAsync(product));
         }
 
         /// <summary>
@@ -159,29 +95,13 @@ namespace B2BApi.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> Put(int id, Product product)
+        public async Task<IActionResult> Put(Product product)
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                if (id == product.Id)
-                {
-                    using (var context = new B2BDbContext())
-                    {
-                        // todo: затестить обновляются ли данные
-                        context.Products.Update(product);
-                        await context.SaveChangesAsync();
-                        return Ok();
-                    }
-                }
-                else
-                {
-                    return NotFound("Invalid handler 'Id' field");
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _productService.UpdateProductAsync(product));
         }
 
         /// <summary>
@@ -196,20 +116,11 @@ namespace B2BApi.Controllers
         [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                using (var context = new B2BDbContext())
-                {
-                    var product = context.Products.Single(i => i.Id == id);
-                    context.Remove(product);
-                    await context.SaveChangesAsync();
-                    return Ok();
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }*/
+            return Ok(await _productService.DeleteProductAsync(id));
+        }
     }
 }
