@@ -30,7 +30,7 @@ namespace B2BApi.Models
                     ? StatusCodes.Status500InternalServerError
                     : StatusCodes.Status200OK
             };
-
+            
             await objectResult.ExecuteResultAsync(context);
         }
     }

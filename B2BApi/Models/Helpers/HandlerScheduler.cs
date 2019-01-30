@@ -7,7 +7,8 @@ namespace B2BApi.Models.Helpers
     {
         [Key]
         public int Id { get; set; }
-        public TimeSpan StartOnTime { get; set; }
-        public int StartEveryDay { get; set; }
+        public int Day { get; set; }
+        public int Hour { get; set; }
+        public int Minute { get; set; }
     }
 }
