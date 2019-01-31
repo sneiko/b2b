@@ -46,5 +46,34 @@ namespace B2BApi.Controllers
             var newToken = JwtHelper.BuildCompleteToken(authorizeResult.ResultObject, _configuration, _date.Now);
             return Ok(await _authorizeService.SaveRefreshTokenCommonAsync(authorizeResult.ResultObject, newToken));
         }
+        
+        /// <summary>
+        ///     Обновляет JWT Token
+        /// </summary>
+        [HttpPut]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ServiceResult<CompleteToken>), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        public async Task<IActionResult> Put()
+        {
+            if (!Request.TryGetJwt(out var token))
+            {
+                return StatusCode(403, "Токен не найден");
+            }
+            
+            if (!Request.TryGetUserId(out var userId))
+            {
+                return StatusCode(403, "Токен не валидный");
+            }
+
+            var validationResult = await _authorizeService.ValidateRefreshTokenCommonAsync(token, userId);
+            if (validationResult.Status == ResultStatus.Fail)
+            {
+                return StatusCode(403, validationResult.Message);
+            }
+
+            var newToken = JwtHelper.BuildCompleteToken(validationResult.ResultObject, _configuration, _date.Now);
+            return Ok(await _authorizeService.SaveRefreshTokenCommonAsync(validationResult.ResultObject, newToken));
+        }
     }
 }

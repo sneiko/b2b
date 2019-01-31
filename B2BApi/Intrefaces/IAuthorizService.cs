@@ -10,5 +10,7 @@ namespace B2BApi.Intrefaces
         Task<ServiceResult<User>> AuthorizeAsync(AuthorizeFormModel formModel);
         
         Task<ServiceResult<CompleteToken>> SaveRefreshTokenCommonAsync(User user, CompleteToken token);
+        
+        Task<ServiceResult<User>> ValidateRefreshTokenCommonAsync(string token, int userId);
     }
 }

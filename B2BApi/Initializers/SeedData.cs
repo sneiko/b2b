@@ -32,6 +32,16 @@ namespace B2BApi.Initializers
                     Salt = "salt1"
                 }
             };
+            var admin1 = new Admin
+            {
+                UserName = "string",
+
+                Credentials = new Credentials
+                {
+                    Password = HashProvider.GetHash("stringsalt1"),
+                    Salt = "salt1"
+                }
+            };
             var user = new Manager()
             {
                 UserName = "manager",
@@ -49,6 +59,7 @@ namespace B2BApi.Initializers
             {
                 context.Users.AddRange(
                     admin,
+                    admin1,
                     user
                 );
 

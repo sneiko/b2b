@@ -25,11 +25,18 @@ namespace B2BApi.Repositories
         }
         
         public async Task<User> GetUserAsync(string username, string password)
-            => await Context.Users.Include(x => x.Credentials)
+            => await Context.Users
+                .Include(x => x.Credentials)
                 .Include(x => x.Token)
                 .FirstOrDefaultAsync(x => x.UserName.Equals(username,
                                               StringComparison.InvariantCultureIgnoreCase) &&
                                           x.Credentials.Password.Equals(password));
+        
+        public async Task<User> GetUserAsync(int userId)
+            => await Context.Users
+                .Include(x => x.Credentials)
+                .Include(x => x.Token)
+                .FirstOrDefaultAsync(x => x.Id == userId);
         
         public async Task SaveCompleteToken(int userId, CompleteToken token)
         {
@@ -38,6 +45,15 @@ namespace B2BApi.Repositories
                               .FirstAsync(x => x.Id == userId) ?? throw new KeyNotFoundException();
             updated.Token = token;
             await Context.SaveChangesAsync();
+        }
+        
+        
+        public async Task<bool> IsRefreshTokenValid(int userId, string refreshToken)
+        {
+            var entry = await Context.Users
+                .Include(x => x.Token)
+                .FirstOrDefaultAsync(x => x.Id == userId && x.Token.RefreshToken == refreshToken);
+            return entry != null;
         }
     }
 }

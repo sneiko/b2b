@@ -57,5 +57,23 @@ namespace B2BApi.Services
                 return new ServiceResult<CompleteToken>(null, ResultStatus.Fail, "Сервис недоступен");
             }
         }
+        
+        public async Task<ServiceResult<User>> ValidateRefreshTokenCommonAsync(string token, int userId)
+        {
+            try
+            {
+                if (!await _usersRepository.IsRefreshTokenValid(userId, token))
+                {
+                    return new ServiceResult<User>(null, ResultStatus.Fail, "Токен не действителен");
+                }
+                
+                var user = await _usersRepository.GetUserAsync(userId);
+                return new ServiceResult<User>(user, ResultStatus.Success);
+            }
+            catch (Exception e)
+            {
+                return new ServiceResult<User>(null, ResultStatus.Fail, "Сервис недоступен");
+            }
+        }
     }
 }
