@@ -25,7 +25,7 @@ namespace B2BApi.Controllers
             _handlerService = handlerService;
         }
 
-        /*
+        
         /// <summary>
         /// Get all handlers
         /// </summary>
@@ -35,26 +35,15 @@ namespace B2BApi.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<ResultObject> Get()
+        public async Task<IActionResult> Get()
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                using (var context = new B2BDbContext())
-                {
-                    var handlers = context.Handlers.ToList();
-
-                    return new ResultObject
-                    {
-                        Result = handlers
-                    };
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _handlerService.GetHandlerListAsync());
         }
-*/
+
 
 
         /// <summary>
@@ -75,7 +64,7 @@ namespace B2BApi.Controllers
             }
             return Ok(await _handlerService.GetHandlerAsync(id));
         }
-/*
+
 
         /// <summary>
         /// Add new handler
@@ -87,63 +76,38 @@ namespace B2BApi.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Post(Handler handler)
+        public async Task<IActionResult> Post(Handler handler)
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                using (var context = new B2BDbContext())
-                {
-                    context.Handlers.Add(handler);
-                    await context.SaveChangesAsync();
-                    return Ok();
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }*/
+            return Ok(await _handlerService.AddHandlerAsync(handler));
+        }
 
-        /*/// <summary>
+        /// <summary>
         /// Update handler data
         /// </summary>
-        /// <param name="id">Handler ID</param>
         /// <param name="handler">New handler object</param>
         /// <returns>Task status</returns>
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
         /// <response code="404">Invalid handler ID</response> 
-        [HttpPut("{id}")]
+        [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult> Put(int id, Handler handler)
+        public async Task<IActionResult> Put(Handler handler)
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                if (id == handler.Id)
-                {
-                    using (var context = new B2BDbContext())
-                    {
-                        // todo: затестить обновляются ли данные
-                        context.Handlers.Update(handler);
-                        await context.SaveChangesAsync();
-                        return Ok();
-                    }
-                }
-                else
-                {
-                    return NotFound("Invalid handler 'Id' field");
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _handlerService.UpdateHandlerAsync(handler));
         }
-*/
 
-/*        /// <summary>
+
+        /// <summary>
         /// Delete handler by ID
         /// </summary>
         /// <param name="id">Handler ID</param>
@@ -154,24 +118,15 @@ namespace B2BApi.Controllers
         [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
-            try
+            if (!Request.TryGetUserId(out var userId))
             {
-                using (var context = new B2BDbContext())
-                {
-                    var handler = context.Handlers.Single(i => i.Id == id);
-                    context.Remove(handler);
-                    await context.SaveChangesAsync();
-                    return Ok();
-                }
+                return StatusCode(403, "Токен протух");
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }*/
+            return Ok(await _handlerService.DeleteHandlerAsync(id));
+        }
 
         /// <summary>
-        /// Delete handler by ID
+        /// Start handler parse by ID
         /// </summary>
         /// <param name="id">Handler ID</param>
         /// <response code="200">Item is delete</response>
@@ -179,7 +134,7 @@ namespace B2BApi.Controllers
         [HttpPatch("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Patch(int id)
+        public async Task<IActionResult> Patch(int id)
         {
             return Ok(await _handlerService.Start(id));
         }
