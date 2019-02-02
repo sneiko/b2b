@@ -32,6 +32,10 @@ namespace B2BApi.Extensions
             builder.RegisterType<HandlerRepository>()
                 .As<IHandlerRepository>()
                 .InstancePerLifetimeScope();
+            
+            builder.RegisterType<ProductRepository>()
+                .As<IProductRepository>()
+                .InstancePerLifetimeScope();
 
             #endregion
             

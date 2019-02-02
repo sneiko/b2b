@@ -44,6 +44,7 @@ namespace B2BApi
             
             services.AddConfigurations(Configuration);
          
+            services.AddMappingProfiles();
             services.AddSwagger();
             services.AddAJwtAuthentication(Configuration);
             services.AddDb(Configuration);
@@ -57,6 +58,8 @@ namespace B2BApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

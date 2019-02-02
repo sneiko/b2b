@@ -19,7 +19,10 @@ namespace B2BApi.Repositories
         /// <param name="handlerId"></param>
         /// <returns></returns>
         public async Task<Handler> GetHandlerAsync(int handlerId)
-            => await Context.Handlers.FirstOrDefaultAsync(x => x.Id == handlerId);
+            => await Context.Handlers
+                .Include(x => x.Patterns)
+                .Include(x => x.GrabColumnItems)
+                .FirstOrDefaultAsync(x => x.Id == handlerId);
 
         /// <summary>
         /// Get handler list from DB

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using B2BApi.Controllers.Base;
@@ -33,7 +34,7 @@ namespace B2BApi.Controllers
         /// <response code="200">Handler List</response>
         /// <response code="400">If the items is null</response>
         [HttpGet]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult<List<Handler>>), 200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Get()
         {
@@ -74,7 +75,7 @@ namespace B2BApi.Controllers
         /// <response code="200">Item is update</response>
         /// <response code="400">If the item is null</response> 
         [HttpPost]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult), 200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Post(Handler handler)
         {
@@ -94,7 +95,7 @@ namespace B2BApi.Controllers
         /// <response code="400">If the item is null</response> 
         /// <response code="404">Invalid handler ID</response> 
         [HttpPut]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Put(Handler handler)
@@ -114,7 +115,7 @@ namespace B2BApi.Controllers
         /// <response code="200">Item is delete</response>
         /// <response code="400">If the item is null</response> 
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult), 200)]
         [ProducesResponseType(400)]
         public async Task<ActionResult> Delete(int id)
         {
@@ -132,10 +133,14 @@ namespace B2BApi.Controllers
         /// <response code="200">Item is delete</response>
         /// <response code="400">If the item is null</response> 
         [HttpPatch("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult), 200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Patch(int id)
         {
+            if (!Request.TryGetUserId(out var userId))
+            {
+                return StatusCode(403, "Токен протух");
+            }
             return Ok(await _handlerService.Start(id));
         }
     }

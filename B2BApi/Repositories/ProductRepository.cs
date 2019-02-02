@@ -20,6 +20,14 @@ namespace B2BApi.Repositories
             => await Context.Products.FirstOrDefaultAsync(x => x.Id == productId);
 
         /// <summary>
+        /// Get product by partNumber
+        /// </summary>
+        /// <param name="partNumber"></param>
+        /// <returns></returns>
+        public async Task<Product> GetProductAsync(string partNumber)
+            => await Context.Products.FirstOrDefaultAsync(x => x.PartNumber == partNumber);
+        
+        /// <summary>
         /// Get product list from DB
         /// </summary>
         /// <returns></returns>
@@ -42,7 +50,10 @@ namespace B2BApi.Repositories
         /// <param name="product"></param>
         /// <returns></returns>
         public async Task UpdateProduct(Product product)
-            => Context.Products.Update(product);
+        {
+            Context.Products.Update(product);
+            await Context.SaveChangesAsync();
+        }
 
         /// <summary>
         /// Add product to DB
