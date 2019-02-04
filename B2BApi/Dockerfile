@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:sdk AS build-env
+FROM microsoft/dotnet:2.1-sdk
 
 WORKDIR /app
 
@@ -9,10 +9,6 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o out
 
-FROM microsoft/dotnet:aspnetcore-runtime
-
 WORKDIR /app
 
-COPY --from=build-env /app/out .
-
-ENTRYPOINT ["dotnet", "B2BApi.dll"]
+CMD ["dotnet", "out/B2BApi.dll"]
