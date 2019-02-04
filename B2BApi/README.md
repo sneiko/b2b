@@ -12,7 +12,7 @@
     
 3. Check server
 
-    ```curl -X POST "http://localhost/api/v1/Common/Authorization" -H "accept: application/json" -H "Content-Type: application/json-patch+json" -d "{\"userName\":\"string\",\"password\":\"string\"}"```
+    ```curl -X POST "http://<HOST>/api/v1/Common/Authorization" -H "accept: application/json" -H "Content-Type: application/json-patch+json" -d "{\"userName\":\"string\",\"password\":\"string\"}"```
 
 
 
