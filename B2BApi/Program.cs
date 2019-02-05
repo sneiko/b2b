@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace B2BApi
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -14,15 +14,7 @@ namespace B2BApi
 
         private static IWebHost BuildWebHost(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: true)
-                .AddCommandLine(args)
-                .Build();
-
-            return WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(config)
-                .UseStartup<Startup>()
-                .Build();
+            return WebHost.CreateDefaultBuilder(args).UseStartup<Startup>().Build();
         }
     }
 }

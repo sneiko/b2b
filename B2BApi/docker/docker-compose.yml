@@ -1,13 +1,10 @@
 version: '3'
-services:
-  postgresql:
-    image: "redis:alpine"
-  
+services:  
   web:
+    container_name: B2BApi
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: docker/Dockerfile
+      
     ports:
       - "80:80"
-    depends_on:
-      - postgresql
