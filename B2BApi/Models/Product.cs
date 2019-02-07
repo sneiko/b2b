@@ -18,8 +18,10 @@ namespace B2BApi.Models
         public string ProducerUri { get; set; } 
         public DateTime UpdateTime { get; set; }
         
-        public ICollection<StockProduct> Stocks { get; set; }
-        public ICollection<Price> Price { get; set; }
+        #region Navigation properties
+        public List<Stock> Stocks { get; set; }
+        #endregion
+        
         public ICollection<CompetitorsPrices> CompetitorsPrices { get; set; } 
         public ICollection<CompetitorsUri> CompetitorsUri { get; set; } 
         public ICollection<AttributeRow> Attribute { get; set; }

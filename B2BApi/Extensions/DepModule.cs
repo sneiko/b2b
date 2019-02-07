@@ -1,12 +1,12 @@
 using Autofac;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Providers;
 using B2BApi.Repositories;
 using B2BApi.Services;
 
 namespace B2BApi.Extensions
 {
-    public sealed class IocModule : Module
+    public sealed class DepModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {            
@@ -35,6 +35,10 @@ namespace B2BApi.Extensions
             
             builder.RegisterType<ProductRepository>()
                 .As<IProductRepository>()
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterType<StockRepository>()
+                .As<IStockRepository>()
                 .InstancePerLifetimeScope();
 
             #endregion

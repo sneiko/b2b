@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
 using B2BApi.ViewModels;
 

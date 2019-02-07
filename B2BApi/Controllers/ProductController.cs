@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using B2BApi.Controllers.Base;
 using B2BApi.DbContext;
 using B2BApi.Helpers;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

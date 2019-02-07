@@ -1,4 +1,4 @@
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Providers;
 using Microsoft.Extensions.DependencyInjection;
 

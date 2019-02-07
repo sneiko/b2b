@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using B2BApi.DbContext;
 using B2BApi.Enums;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
 using B2BApi.Models.Enum;
 using B2BApi.Models.Helpers;
@@ -22,12 +22,14 @@ namespace B2BApi.Services
 {
     public class HandlerService: IHandlerService
     {
-        protected readonly IHandlerRepository HandlerRepository;
-        protected readonly IProductRepository ProductRepository;
-        protected readonly IMapper Mapper;
+        private readonly IStockRepository StockRepository;
+        private readonly IHandlerRepository HandlerRepository;
+        private readonly IProductRepository ProductRepository;
+        private readonly IMapper Mapper;
 
-        public HandlerService(IHandlerRepository handlerRepository, IProductRepository productRepository, IMapper mapper)
+        public HandlerService(IHandlerRepository handlerRepository, IProductRepository productRepository, IStockRepository stockRepository, IMapper mapper)
         {
+            StockRepository = stockRepository;
             HandlerRepository = handlerRepository;
             ProductRepository = productRepository;
             Mapper = mapper;
@@ -164,23 +166,75 @@ namespace B2BApi.Services
 
                     if (dataSet.Tables.Count > 0)
                     {
-                        List<Product> products = DataTableToProductList(dataSet.Tables[0], handler);
 
-                        foreach (var p in products)
+                        var dataTable = dataSet.Tables[0];
+                        var grabColumns = handler.GrabColumnItems;
+                        for (var index = handler.StartRowData; index < dataTable.Rows.Count; index++)
                         {
-                            var product = await ProductRepository.GetProductAsync(p.PartNumber);
+                            DataRow row = dataTable.Rows[index];
+                            foreach (var pattern in handler.Patterns)
+                            {
+                                row[pattern.ColumnId] = row[pattern.ColumnId].ToString().Replace(pattern.Old, pattern.New);
+                            }
+
+                            var partIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.PartNumber).Value;
+                            var partnumber = row[partIndex].ToString();
+                            
+                            var product = await ProductRepository.GetProductAsync(partnumber);
+
+                            if (product == null)
+                            {
+                                var modelIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.Model).Value;
+                                var model = row[modelIndex].ToString();
+                                
+                                var brandIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.Brand).Value;
+                                var brandString = row[brandIndex].ToString();
+
+                                var brand = new Brand
+                                {
+                                    Name = brandString
+                                };
+                                var newProduct = new Product
+                                {
+                                    Model = model,
+                                    PartNumber = partnumber,
+                                    Brand = brand
+                                };
+
+                                product = await ProductRepository.AddProduct(newProduct);
+                            }
 
                             if (product != null)
                             {
-                                Mapper.Map<Product, Product>(p, product);
+                                var countIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.Count).Value;
+                                var count = int.Parse(row[countIndex].ToString());
                                 
-                                await ProductRepository.UpdateProduct(product);
+                                var priceIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.Price).Value;
+                                var p = double.Parse(row[priceIndex].ToString());
+                                var price = new Price
+                                {
+                                    PriceType = PriceType.Cash,
+                                    Value = p
+                                };
+                                
+                                var newStock = new Stock
+                                {
+                                    Price = price,
+                                    Count = count,
+                                    Product = product,
+                                    Provider = handler.Provider
+                                };
+                                var stock = await StockRepository.GetStockByProductAsync(product.Id);
+
+                                if (stock != null)
+                                {
+                                    await StockRepository.UpdateStock(newStock);
+                                }
+                                else
+                                {
+                                    await StockRepository.AddStock(newStock);
+                                }
                             }
-                            else
-                            {
-                                // Check if need do create product
-                            }
-                            
                         }
 
                         return new ServiceResult(ResultStatus.Success);

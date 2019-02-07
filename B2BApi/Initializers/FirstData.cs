@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using B2BApi.DbContext;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
 using B2BApi.Models.Enum;
 using B2BApi.Models.Helpers;
@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace B2BApi.Initializers
 {
-    public static class SeedData
+    public static class FirstData
     {
         private static readonly IHashProvider HashProvider = new Sha256HashProvider();
 
@@ -68,7 +68,7 @@ namespace B2BApi.Initializers
                 context.SaveChanges();
             }
 
-            #region handlers
+            #region handlers            
             
             var handler = new Handler
             {
@@ -80,23 +80,42 @@ namespace B2BApi.Initializers
                 LastUpdate = DateTime.Now,
                 Patterns = new List<Pattern>
                 {
-                    new Pattern {Id = 1, ColumnId = 3, Old = "н", New = "0"},
-                    new Pattern {Id = 2, ColumnId = 3, Old = "м", New = "5"},
-                    new Pattern {Id = 3, ColumnId = 3, Old = "c", New = "10"},
-                    new Pattern {Id = 4, ColumnId = 3, Old = "б", New = "50"}
+                    new Pattern {ColumnId = 8, Old = "н", New = "0"},
+                    new Pattern {ColumnId = 8, Old = "м", New = "5"},
+                    new Pattern {ColumnId = 8, Old = "c", New = "10"},
+                    new Pattern {ColumnId = 8, Old = "б", New = "50"}
                 },
                 GrabColumnItems = new List<GrabColumnItem>
                 {
-                    new GrabColumnItem {Id = 1, GrabColumn = GrabColumn.Model, Value = 4},
-                    new GrabColumnItem {Id = 2, GrabColumn = GrabColumn.Brand, Value = 7},
-                    new GrabColumnItem {Id = 3, GrabColumn = GrabColumn.PartNumber, Value = 3},
-                    new GrabColumnItem {Id = 4, GrabColumn = GrabColumn.Price, Value = 11},
-                    new GrabColumnItem {Id = 5, GrabColumn = GrabColumn.Count, Value = 8}
+                    new GrabColumnItem {GrabColumn = GrabColumn.Model, Value = 4},
+                    new GrabColumnItem {GrabColumn = GrabColumn.Brand, Value = 7},
+                    new GrabColumnItem {GrabColumn = GrabColumn.PartNumber, Value = 3},
+                    new GrabColumnItem {GrabColumn = GrabColumn.Price, Value = 11},
+                    new GrabColumnItem {GrabColumn = GrabColumn.Count, Value = 8}
                 }
             };
 
+            var provider = new Provider
+            {
+                Bic = "1023912",
+                Inn = "2039401231",
+                Name = "Pochinki",
+                uAddress = "Moscow",
+                Bank = "Zenit",
+                KorSchet = "1923401923",
+                RasSchet = "0234123094923"
+            };
+
+            handler.Provider = provider;
+            
             #endregion
             
+            
+            if (!context.Providers.Any())
+            {
+                context.Providers.AddRange(provider);
+                context.SaveChanges();
+            }
             
             if (!context.Handlers.Any())
             {

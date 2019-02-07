@@ -3,7 +3,7 @@ using B2BApi.Controllers.Base;
 using B2BApi.Enums;
 using B2BApi.FormModels;
 using B2BApi.Helpers;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
 using B2BApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;

@@ -13,6 +13,7 @@ namespace B2BApi.DbContext
         public B2BDbContext(DbContextOptions options)
             : base(options)
         {
+            
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -27,7 +28,7 @@ namespace B2BApi.DbContext
         public DbSet<Category> Categories{ get; set; }
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<AttributeRow> Attributes { get; set; }
-        public DbSet<StockProduct> StockProducts { get; set; }
+        public DbSet<Stock> StockProducts { get; set; }
         public DbSet<Handler> Handlers { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<User> Users { get; set; }
@@ -35,11 +36,6 @@ namespace B2BApi.DbContext
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Handler
-            modelBuilder.Entity<Handler>()
-                .HasOne(p => p.Provider)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
             
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new CredentialConfiguration());

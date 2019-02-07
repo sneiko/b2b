@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using B2BApi.DbContext;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -11,7 +12,9 @@ namespace B2BApi.Repositories
 {
     public class HandlerRepository : BaseRepository, IHandlerRepository
     {
-        public HandlerRepository(B2BDbContext context) : base(context){}
+        public HandlerRepository(B2BDbContext context, IMapper mapper) : base(context, mapper)
+        {
+        }
 
         /// <summary>
         /// Get handler from DB
@@ -20,6 +23,7 @@ namespace B2BApi.Repositories
         /// <returns></returns>
         public async Task<Handler> GetHandlerAsync(int handlerId)
             => await Context.Handlers
+                .Include(x => x.Provider)
                 .Include(x => x.Patterns)
                 .Include(x => x.GrabColumnItems)
                 .FirstOrDefaultAsync(x => x.Id == handlerId);

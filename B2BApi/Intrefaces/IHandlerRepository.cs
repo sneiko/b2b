@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using B2BApi.Models;
 
-namespace B2BApi.Intrefaces
+namespace B2BApi.Interfaces
 {
     public interface IHandlerRepository : IRepository
     {
