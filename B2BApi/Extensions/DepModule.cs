@@ -40,6 +40,10 @@ namespace B2BApi.Extensions
             builder.RegisterType<StockRepository>()
                 .As<IStockRepository>()
                 .InstancePerLifetimeScope();
+            
+            builder.RegisterType<BrandRepository>()
+                .As<IBrandRepository>()
+                .InstancePerLifetimeScope();
 
             #endregion
             
@@ -51,6 +55,10 @@ namespace B2BApi.Extensions
             
             builder.RegisterType<HandlerService>()
                 .As<IHandlerService>()
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterType<ProductService>()
+                .As<IProductService>()
                 .InstancePerLifetimeScope();
             
             #endregion

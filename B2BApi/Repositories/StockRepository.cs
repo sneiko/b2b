@@ -18,7 +18,6 @@ namespace B2BApi.Repositories
         public async Task<Stock> GetStockAsync(int productId, int providerId)
             =>
                 await Context.StockProducts
-                    .Include(x => x.Price)
                     .FirstOrDefaultAsync(x => x.Product.Id == productId &&
                                               x.Provider.Id == providerId);
 

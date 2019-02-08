@@ -7,13 +7,15 @@ using B2BApi.DbContext;
 using B2BApi.Helpers;
 using B2BApi.Interfaces;
 using B2BApi.Models;
+using B2BApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace B2BApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Area("Common")]
+    [Route("api/v1/[area]/[controller]")]
     [Authorize(Roles = "Admin, Manager, Director")]
     public class ProductController : ControllerAuthorizeApi
     {
@@ -52,9 +54,9 @@ namespace B2BApi.Controllers
         /// <response code="200">Product data</response>
         /// <response code="400">If the item is null</response> 
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult<Product>), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
             if (!Request.TryGetUserId(out var userId))
             {

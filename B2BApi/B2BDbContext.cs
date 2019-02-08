@@ -24,7 +24,6 @@ namespace B2BApi.DbContext
         // general
         public DbSet<Product> Products { get; set; }
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<BrandType> BrandTypes { get; set; }
         public DbSet<Category> Categories{ get; set; }
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<AttributeRow> Attributes { get; set; }

@@ -30,8 +30,8 @@ namespace B2BApi.Initializers
 
                 Credentials = new Credentials
                 {
-                    Password = HashProvider.GetHash("passwordsalt1"),
-                    Salt = "salt1"
+                    Password = HashProvider.GetHash("passwordkafd0"),
+                    Salt = "kafd0"
                 }
             };
             var admin1 = new Admin
@@ -40,8 +40,8 @@ namespace B2BApi.Initializers
 
                 Credentials = new Credentials
                 {
-                    Password = HashProvider.GetHash("stringsalt1"),
-                    Salt = "salt1"
+                    Password = HashProvider.GetHash("string9dkf9"),
+                    Salt = "9dkf9"
                 }
             };
             var user = new Manager()
@@ -50,8 +50,8 @@ namespace B2BApi.Initializers
 
                 Credentials = new Credentials
                 {
-                    Password = HashProvider.GetHash("passwordsalt1"),
-                    Salt = "salt1"
+                    Password = HashProvider.GetHash("passworddf0os"),
+                    Salt = "df0os"
                 }
             };
 
@@ -72,11 +72,11 @@ namespace B2BApi.Initializers
             
             var handler = new Handler
             {
-                Name = "Sosiska",
+                Status = HandlerStatus.Idle,
                 Url =
                     "https://www.dropbox.com/s/kv5bx2ncfz8bzhn/%D0%9D%D0%B0%D0%B4%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5%20%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B.xls?dl=1",
-                SaveFileName = "pochinki",
                 StartRowData = 1,
+                AddNewProduct = true,
                 LastUpdate = DateTime.Now,
                 Patterns = new List<Pattern>
                 {
@@ -99,7 +99,7 @@ namespace B2BApi.Initializers
             {
                 Bic = "1023912",
                 Inn = "2039401231",
-                Name = "Pochinki",
+                Name = "Беларусь опт склад",
                 uAddress = "Moscow",
                 Bank = "Zenit",
                 KorSchet = "1923401923",

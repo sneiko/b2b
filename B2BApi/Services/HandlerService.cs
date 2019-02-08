@@ -20,15 +20,18 @@ using ExcelDataReader;
 
 namespace B2BApi.Services
 {
-    public class HandlerService: IHandlerService
+    public class HandlerService : IHandlerService
     {
         private readonly IStockRepository StockRepository;
+        private readonly IBrandRepository BrandRepository;
         private readonly IHandlerRepository HandlerRepository;
         private readonly IProductRepository ProductRepository;
         private readonly IMapper Mapper;
 
-        public HandlerService(IHandlerRepository handlerRepository, IProductRepository productRepository, IStockRepository stockRepository, IMapper mapper)
+        public HandlerService(IBrandRepository brandRepository, IHandlerRepository handlerRepository,
+            IProductRepository productRepository, IStockRepository stockRepository, IMapper mapper)
         {
+            BrandRepository = brandRepository;
             StockRepository = stockRepository;
             HandlerRepository = handlerRepository;
             ProductRepository = productRepository;
@@ -45,7 +48,7 @@ namespace B2BApi.Services
             try
             {
                 var handler = await HandlerRepository.GetHandlerAsync(handlerId);
-                
+
                 return new ServiceResult<Handler>(handler, ResultStatus.Success);
             }
             catch (Exception e)
@@ -53,7 +56,7 @@ namespace B2BApi.Services
                 return new ServiceResult<Handler>(null, ResultStatus.Fail, "Сервис недоступен");
             }
         }
-        
+
         /// <summary>
         /// Get all handler objects in List<Handler/> 
         /// </summary>
@@ -63,7 +66,7 @@ namespace B2BApi.Services
             try
             {
                 List<Handler> handlers = await HandlerRepository.GetHandlerListAsync();
-                
+
                 return new ServiceResult<List<Handler>>(handlers, ResultStatus.Success);
             }
             catch (Exception e)
@@ -83,7 +86,7 @@ namespace B2BApi.Services
             try
             {
                 await HandlerRepository.DeleteHandlerAsync(id);
-                
+
                 return new ServiceResult(ResultStatus.Success);
             }
             catch (Exception e)
@@ -91,7 +94,7 @@ namespace B2BApi.Services
                 return new ServiceResult(ResultStatus.Fail, "Сервис недоступен");
             }
         }
-        
+
         /// <summary>
         /// Update handler in DB
         /// </summary>
@@ -102,7 +105,7 @@ namespace B2BApi.Services
             try
             {
                 await HandlerRepository.UpdateHandler(handler);
-                
+
                 return new ServiceResult(ResultStatus.Success);
             }
             catch (Exception e)
@@ -110,7 +113,7 @@ namespace B2BApi.Services
                 return new ServiceResult(ResultStatus.Fail, "Сервис недоступен");
             }
         }
-        
+
         /// <summary>
         /// Add handler object to DB
         /// </summary>
@@ -121,7 +124,7 @@ namespace B2BApi.Services
             try
             {
                 await HandlerRepository.AddHandler(handler);
-                
+
                 return new ServiceResult(ResultStatus.Success);
             }
             catch (Exception e)
@@ -129,14 +132,13 @@ namespace B2BApi.Services
                 return new ServiceResult(ResultStatus.Fail, "Сервис недоступен");
             }
         }
-        
-        
+
+
         // todo: доедалть имплементацию 
-        
+
 
         public async Task<ServiceResult> Start(int handlerId)
         {
-            
             try
             {
                 var handler = await HandlerRepository.GetHandlerAsync(handlerId);
@@ -144,16 +146,19 @@ namespace B2BApi.Services
 
                 if (!re.IsMatch(handler.Url))
                     return new ServiceResult(ResultStatus.Fail, "Неверный Url прайса");
-            
+
                 string fileExtension = re.Match(handler.Url).Groups[1].Value;
-            
+                string fileName = String.Join("", handler.Provider.Name.Split(Path.GetInvalidFileNameChars()));
+                string filePath = fileName.Replace(" ", "") + fileExtension;
+
                 using (var wc = new WebClient())
                 {
-                    wc.DownloadFile(new Uri(handler.Url), handler.SaveFileName + fileExtension);
+                    wc.DownloadFile(new Uri(handler.Url), filePath);
                 }
 
 
-                using (var stream = new FileStream(handler.SaveFileName + fileExtension, FileMode.Open, FileAccess.Read))
+                using (var stream =
+                    new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
                     IExcelDataReader excelDataReader = ExcelReaderFactory.CreateReader(stream);
                     DataSet dataSet = excelDataReader.AsDataSet(new ExcelDataSetConfiguration
@@ -166,7 +171,6 @@ namespace B2BApi.Services
 
                     if (dataSet.Tables.Count > 0)
                     {
-
                         var dataTable = dataSet.Tables[0];
                         var grabColumns = handler.GrabColumnItems;
                         for (var index = handler.StartRowData; index < dataTable.Rows.Count; index++)
@@ -174,26 +178,28 @@ namespace B2BApi.Services
                             DataRow row = dataTable.Rows[index];
                             foreach (var pattern in handler.Patterns)
                             {
-                                row[pattern.ColumnId] = row[pattern.ColumnId].ToString().Replace(pattern.Old, pattern.New);
+                                row[pattern.ColumnId] =
+                                    row[pattern.ColumnId].ToString().Replace(pattern.Old, pattern.New);
                             }
 
                             var partIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.PartNumber).Value;
                             var partnumber = row[partIndex].ToString();
-                            
+
                             var product = await ProductRepository.GetProductAsync(partnumber);
 
                             if (product == null)
                             {
                                 var modelIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.Model).Value;
                                 var model = row[modelIndex].ToString();
-                                
+
                                 var brandIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.Brand).Value;
                                 var brandString = row[brandIndex].ToString();
 
-                                var brand = new Brand
+                                var brand = await BrandRepository.GetBrandAsync(brandName: brandString) ?? new Brand
                                 {
                                     Name = brandString
                                 };
+
                                 var newProduct = new Product
                                 {
                                     Model = model,
@@ -209,17 +215,13 @@ namespace B2BApi.Services
                             {
                                 var countIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.Count).Value;
                                 var count = int.Parse(row[countIndex].ToString());
-                                
+
                                 var priceIndex = grabColumns.First(x => x.GrabColumn == GrabColumn.Price).Value;
-                                var p = double.Parse(row[priceIndex].ToString());
-                                var price = new Price
-                                {
-                                    PriceType = PriceType.Cash,
-                                    Value = p
-                                };
-                                
+                                var price = double.Parse(row[priceIndex].ToString());
+
                                 var newStock = new Stock
                                 {
+                                    PriceType = PriceType.Cash, // temp
                                     Price = price,
                                     Count = count,
                                     Product = product,
@@ -242,72 +244,13 @@ namespace B2BApi.Services
                         return new ServiceResult(ResultStatus.Success);
                     }
                 }
+
                 return new ServiceResult(ResultStatus.Fail, "");
             }
             catch (Exception e)
             {
                 return new ServiceResult(ResultStatus.Fail, "Не удалось обработать прайс");
             }
-        }
-
-        private static List<Product> DataTableToProductList(DataTable dataTable, Handler handler)
-        {
-            var productList = new List<Product>();
-            var grabColumns = handler.GrabColumnItems;
-            for (var index = handler.StartRowData; index < dataTable.Rows.Count; index++)
-            {
-                DataRow row = dataTable.Rows[index];
-                var product = new Product();
-                foreach (var pattern in handler.Patterns)
-                {
-                    row[pattern.ColumnId] = row[pattern.ColumnId].ToString().Replace(pattern.Old, pattern.New);
-                }
-
-                foreach (var g in grabColumns)
-                {
-                    var val = row[g.Value];
-                    product.GetType().GetProperty(g.GrabColumn.ToString()).SetValue(product, val);
-                }
-
-                productList.Add(product);
-            }
-
-            return productList;
-        }
-
-        private static  DataTable DeleteColumns(Handler handler, DataTable dataTable)
-        {   
-            foreach (DataColumn c in dataTable.Columns)
-            {
-                int index;
-                if (!Int32.TryParse(c.ColumnName.Replace("Column", ""), out index))
-                    continue;
-                
-                bool grab = handler.GrabColumnItems.Any(x => x.Value == index);
-                if (grab == false)
-                {
-                    dataTable.Columns.Remove(c.ColumnName);
-                    DeleteColumns(handler, dataTable);
-                    break;
-                } 
-                else 
-                {
-                    var newColumnName = handler.GrabColumnItems.First(x => x.Value == index);
-                    dataTable.Columns[c.ColumnName].ColumnName = newColumnName.GrabColumn.ToString();
-                }
-            }
-
-            return dataTable;
-        }
-
-        private static DataTable ReplacePatterns(ICollection<Pattern> patterns, DataTable dataTable)
-        {   
-            foreach (DataRow dataTableRow in dataTable.Rows)
-                foreach (var pattern in patterns)
-                    dataTableRow[pattern.ColumnId] =
-                        dataTableRow[pattern.ColumnId].ToString().Replace(pattern.Old, pattern.New);
-
-            return dataTable;
         }
     }
 }

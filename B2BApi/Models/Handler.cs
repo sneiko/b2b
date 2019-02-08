@@ -15,10 +15,8 @@ namespace B2BApi.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
         public HandlerStatus Status { get; set; }
         public string Url { get; set; }
-        public string SaveFileName { get; set; }
         public int StartRowData { get; set; }
         public bool AddNewProduct { get; set; }
        

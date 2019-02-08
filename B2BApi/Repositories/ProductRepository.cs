@@ -21,7 +21,10 @@ namespace B2BApi.Repositories
         /// <param name="productId"></param>
         /// <returns></returns>
         public async Task<Product> GetProductAsync(int productId)
-            => await Context.Products.FirstOrDefaultAsync(x => x.Id == productId);
+            => await Context.Products
+                .Include(x => x.Brand)
+                .Include(x => x.Stocks)
+                .FirstOrDefaultAsync(x => x.Id == productId);
 
         /// <summary>
         /// Get product by partNumber
