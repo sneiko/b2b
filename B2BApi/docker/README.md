@@ -14,6 +14,18 @@
 
     ```curl -X POST "http://<HOST>/api/v1/Common/Authorization" -H "accept: application/json" -H "Content-Type: application/json-patch+json" -d "{\"userName\":\"string\",\"password\":\"string\"}"```
 
+##### Новое обновление
+
+1. Build 
+
+      ```cd docker``` переходим в директорию 
+      
+      ```sudo docker-compose build``` собираем проект
+2. Start 
+
+      ```sudo docker-compose up -d``` запускаем проект
+
+
 
 
 
