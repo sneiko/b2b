@@ -16,12 +16,16 @@
 
 ##### Новое обновление
 
-1. Build 
+1. Stop 
+
+    ```sudo  docker-compose stop```
+
+2. Build 
 
       ```cd docker``` переходим в директорию 
       
       ```sudo docker-compose build``` собираем проект
-2. Start 
+3. Start 
 
       ```sudo docker-compose up -d``` запускаем проект
 
