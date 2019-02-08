@@ -5,26 +5,26 @@ using System.Threading.Tasks;
 using B2BApi.Controllers.Base;
 using B2BApi.DbContext;
 using B2BApi.Helpers;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
+using B2BApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace B2BApi.Controllers
-{
-    [Route("api/[controller]")]
+namespace B2BApi.Controllers {
+    [Area("Common")]
+    [Route("api/v1/[area]/[controller]")]
     [Authorize(Roles = "Admin, Manager, Director")]
-    public class ProductController : ControllerAuthorizeApi
-    {
+    public class ProductController : ControllerAuthorizeApi {
         private readonly IProductService _productService;
-        public ProductController(IProductService productService)
-        {
+
+        public ProductController(IProductService productService) {
             _productService = productService;
         }
 
-        
-         /// <summary>
+
+        /// <summary>
         /// Get all products
         /// </summary>
         /// <returns>Product list array</returns>
@@ -33,15 +33,13 @@ namespace B2BApi.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Get()
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<IActionResult> Get() {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.GetProductListAsync());
         }
-
 
 
         /// <summary>
@@ -52,14 +50,13 @@ namespace B2BApi.Controllers
         /// <response code="200">Product data</response>
         /// <response code="400">If the item is null</response> 
         [HttpGet("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ServiceResult<Product>), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Get(int id)
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<IActionResult> Get([FromRoute] int id) {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.GetProductAsync(id));
         }
 
@@ -73,12 +70,11 @@ namespace B2BApi.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post(Product product)
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<IActionResult> Post(Product product) {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.AddProductAsync(product));
         }
 
@@ -95,12 +91,11 @@ namespace B2BApi.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Put(Product product)
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<IActionResult> Put(Product product) {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.UpdateProductAsync(product));
         }
 
@@ -114,12 +109,11 @@ namespace B2BApi.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Delete(int id)
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<ActionResult> Delete(int id) {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.DeleteProductAsync(id));
         }
     }

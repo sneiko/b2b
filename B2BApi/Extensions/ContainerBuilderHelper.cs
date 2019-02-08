@@ -10,7 +10,7 @@ namespace B2BApi.Extensions
         {
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            builder.RegisterModule<IocModule>();
+            builder.RegisterModule<DepModule>();
             var appContainer = builder.Build();
             return new AutofacServiceProvider(appContainer);;
         }

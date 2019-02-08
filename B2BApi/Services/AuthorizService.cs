@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using B2BApi.Enums;
 using B2BApi.FormModels;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
 using B2BApi.Models.Enum;
 using B2BApi.Repositories;

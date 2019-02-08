@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using B2BApi.Models.Enum;
 using B2BApi.Models.Helpers;
 
@@ -25,5 +26,13 @@ namespace B2BApi.Models
         public DateTime RequestDeadline { get; set; }
         public DateTime TimeOfDelivery { get; set; }
         public string Currency { get; set; }
+
+        #region Navigation Properties
+        
+        public List<Handler> Handlers { get; set; }
+        
+        public List<Stock> Stocks { get; set; }
+
+        #endregion
     }
 }

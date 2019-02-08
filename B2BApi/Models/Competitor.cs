@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace B2BApi.Models
 {
+    // Конкурент
     public class Competitor
     {
         [Key]

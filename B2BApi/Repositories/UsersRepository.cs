@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using B2BApi.DbContext;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +12,8 @@ namespace B2BApi.Repositories
 {
     public class UsersRepository : BaseRepository, IUsersRepository
     {
-        public UsersRepository(B2BDbContext context) : base(context)
+        public UsersRepository(B2BDbContext context, IMapper mapper) : base(context, mapper)
         {
-            
         }
 
         public async Task<string> GetUserSaltAsync(string username)

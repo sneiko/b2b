@@ -1,6 +1,6 @@
 using System;
 
-namespace B2BApi.Intrefaces
+namespace B2BApi.Interfaces
 {
     public interface IDateTimeProvider
     {

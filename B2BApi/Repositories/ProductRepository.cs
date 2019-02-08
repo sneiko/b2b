@@ -1,15 +1,19 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using B2BApi.DbContext;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 using B2BApi.Models;
+using B2BApi.Models.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace B2BApi.Repositories
 {
     public class ProductRepository: BaseRepository, IProductRepository
     {
-        public ProductRepository(B2BDbContext context) : base(context){}
+        public ProductRepository(B2BDbContext context, IMapper mapper) : base(context, mapper)
+        {
+        }
 
         /// <summary>
         /// Get product from DB
@@ -17,7 +21,10 @@ namespace B2BApi.Repositories
         /// <param name="productId"></param>
         /// <returns></returns>
         public async Task<Product> GetProductAsync(int productId)
-            => await Context.Products.FirstOrDefaultAsync(x => x.Id == productId);
+            => await Context.Products
+                .Include(x => x.Brand)
+                .Include(x => x.Stocks)
+                .FirstOrDefaultAsync(x => x.Id == productId);
 
         /// <summary>
         /// Get product by partNumber
@@ -25,7 +32,8 @@ namespace B2BApi.Repositories
         /// <param name="partNumber"></param>
         /// <returns></returns>
         public async Task<Product> GetProductAsync(string partNumber)
-            => await Context.Products.FirstOrDefaultAsync(x => x.PartNumber == partNumber);
+            => await Context.Products
+                .FirstOrDefaultAsync(x => x.PartNumber == partNumber);
         
         /// <summary>
         /// Get product list from DB
@@ -60,7 +68,11 @@ namespace B2BApi.Repositories
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        public async Task AddProduct(Product product)
-            => Context.Products.Add(product);
+        public async Task<Product> AddProduct(Product product)
+        {
+            var entry = Context.Products.Add(product);
+            await Context.SaveChangesAsync();
+            return entry.Entity;
+        }
     }
 }
