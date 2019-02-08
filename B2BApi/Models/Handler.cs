@@ -20,6 +20,7 @@ namespace B2BApi.Models
         public string Url { get; set; }
         public string SaveFileName { get; set; }
         public int StartRowData { get; set; }
+        public bool AddNewProduct { get; set; }
        
         public ICollection<Pattern> Patterns { get; set; }
         public ICollection<GrabColumnItem> GrabColumnItems { get; set; }

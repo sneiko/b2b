@@ -15,18 +15,21 @@ namespace B2BApi.Repositories
         {
         }
 
-        public async Task<Stock> GetStockByProductAsync(int productId)
+        public async Task<Stock> GetStockAsync(int productId, int providerId)
             =>
-            await Context.StockProducts.FirstOrDefaultAsync(x => x.Product.Id == productId);
+                await Context.StockProducts
+                    .Include(x => x.Price)
+                    .FirstOrDefaultAsync(x => x.Product.Id == productId &&
+                                              x.Provider.Id == providerId);
 
-        public async Task<Stock> UpdateStock(Stock stock)
+        public async Task<Stock> UpdateStock(Stock newStock, Stock oldStock = null)
         {
-            var entry = await Context.StockProducts
-                .Include(x => x.Price)
-                .FirstOrDefaultAsync(x => x.Provider.Id == stock.Provider.Id);
-            Mapper.Map(stock, entry);
+            if (oldStock == null)
+                oldStock = await GetStockAsync(newStock.Product.Id, newStock.Provider.Id);
+
+            Mapper.Map(newStock, oldStock);
             await Context.SaveChangesAsync();
-            return entry;
+            return oldStock;
         }
 
         public async Task<Stock> AddStock(Stock stock)

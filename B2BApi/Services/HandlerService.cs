@@ -143,7 +143,7 @@ namespace B2BApi.Services
                 var re = new Regex("(\\.(xlsx|xls|csv))");
 
                 if (!re.IsMatch(handler.Url))
-                    return new ServiceResult(ResultStatus.Fail, "Сервис недоступен");
+                    return new ServiceResult(ResultStatus.Fail, "Неверный Url прайса");
             
                 string fileExtension = re.Match(handler.Url).Groups[1].Value;
             
@@ -198,7 +198,8 @@ namespace B2BApi.Services
                                 {
                                     Model = model,
                                     PartNumber = partnumber,
-                                    Brand = brand
+                                    Brand = brand,
+                                    UpdateTime = DateTime.Now
                                 };
 
                                 product = await ProductRepository.AddProduct(newProduct);
@@ -222,15 +223,16 @@ namespace B2BApi.Services
                                     Price = price,
                                     Count = count,
                                     Product = product,
-                                    Provider = handler.Provider
+                                    Provider = handler.Provider,
+                                    UpdateTime = DateTime.Now
                                 };
-                                var stock = await StockRepository.GetStockByProductAsync(product.Id);
+                                var oldStock = await StockRepository.GetStockAsync(product.Id, handler.Provider.Id);
 
-                                if (stock != null)
+                                if (oldStock != null)
                                 {
-                                    await StockRepository.UpdateStock(newStock);
+                                    await StockRepository.UpdateStock(newStock, oldStock);
                                 }
-                                else
+                                else if (handler.AddNewProduct)
                                 {
                                     await StockRepository.AddStock(newStock);
                                 }

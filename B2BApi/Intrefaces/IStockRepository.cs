@@ -6,8 +6,8 @@ namespace B2BApi.Interfaces
 {
     public interface IStockRepository : IRepository
     {
-        Task<Stock> GetStockByProductAsync(int productId);
-        Task<Stock> UpdateStock(Stock stock);
+        Task<Stock> GetStockAsync(int productId, int providerId);
+        Task<Stock> UpdateStock(Stock newStock, Stock oldStock = null);
         Task<Stock> AddStock(Stock stock);
     }
 }
