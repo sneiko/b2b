@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
-using B2BApi.Intrefaces;
+using B2BApi.Interfaces;
 
 namespace B2BApi.Providers
 {

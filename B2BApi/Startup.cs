@@ -80,7 +80,7 @@ namespace B2BApi
             app.UseAuthentication();
             app.UseMvc();
             
-            SeedData.EnsurePopulated(app);
+            FirstData.EnsurePopulated(app);
         }
         
         private static string GetXmlCommentsPath()

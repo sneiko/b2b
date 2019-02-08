@@ -203,6 +203,8 @@ project.lock.json
 **/wwwroot/*
 
 # SpecFlow specific
+*.xls
+*.xlsx
 *.feature.cs
 *.feature.xlsx.*
 *.Specs_*.html

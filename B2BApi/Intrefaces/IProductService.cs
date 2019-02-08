@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using B2BApi.Models;
 using B2BApi.ViewModels;
 
-namespace B2BApi.Intrefaces
+namespace B2BApi.Interfaces
 {
     public interface IProductService
     {

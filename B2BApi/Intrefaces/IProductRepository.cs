@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using B2BApi.Models;
 
-namespace B2BApi.Intrefaces
+namespace B2BApi.Interfaces
 {
     public interface IProductRepository : IRepository
     {
@@ -11,6 +11,6 @@ namespace B2BApi.Intrefaces
         Task DeleteProductAsync(int productId);
         Task<List<Product>> GetProductListAsync();
         Task UpdateProduct(Product product);
-        Task AddProduct(Product product);
+        Task<Product> AddProduct(Product product);
     }
 }
