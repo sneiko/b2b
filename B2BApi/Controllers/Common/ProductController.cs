@@ -12,21 +12,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace B2BApi.Controllers
-{
+namespace B2BApi.Controllers {
     [Area("Common")]
     [Route("api/v1/[area]/[controller]")]
     [Authorize(Roles = "Admin, Manager, Director")]
-    public class ProductController : ControllerAuthorizeApi
-    {
+    public class ProductController : ControllerAuthorizeApi {
         private readonly IProductService _productService;
-        public ProductController(IProductService productService)
-        {
+
+        public ProductController(IProductService productService) {
             _productService = productService;
         }
 
-        
-         /// <summary>
+
+        /// <summary>
         /// Get all products
         /// </summary>
         /// <returns>Product list array</returns>
@@ -35,15 +33,13 @@ namespace B2BApi.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Get()
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<IActionResult> Get() {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.GetProductListAsync());
         }
-
 
 
         /// <summary>
@@ -56,12 +52,11 @@ namespace B2BApi.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ServiceResult<Product>), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Get([FromRoute]int id)
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<IActionResult> Get([FromRoute] int id) {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.GetProductAsync(id));
         }
 
@@ -75,12 +70,11 @@ namespace B2BApi.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Post(Product product)
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<IActionResult> Post(Product product) {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.AddProductAsync(product));
         }
 
@@ -97,12 +91,11 @@ namespace B2BApi.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Put(Product product)
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<IActionResult> Put(Product product) {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.UpdateProductAsync(product));
         }
 
@@ -116,12 +109,11 @@ namespace B2BApi.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Delete(int id)
-        {
-            if (!Request.TryGetUserId(out var userId))
-            {
+        public async Task<ActionResult> Delete(int id) {
+            if (!Request.TryGetUserId(out var userId)) {
                 return StatusCode(403, "Токен протух");
             }
+
             return Ok(await _productService.DeleteProductAsync(id));
         }
     }

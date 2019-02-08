@@ -35,10 +35,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\User" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Remove="pochinki.xls" />
     </ItemGroup>
 
