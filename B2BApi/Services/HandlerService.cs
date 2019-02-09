@@ -19,12 +19,10 @@ using B2BApi.ViewModels;
 using ExcelDataReader;
 using Microsoft.Extensions.Configuration;
 
-namespace B2BApi.Services
-{
-    public class HandlerService : IHandlerService
-    {
-        private readonly IStockRepository StockRepository;
-        private readonly IBrandRepository BrandRepository;
+namespace B2BApi.Services {
+    public class HandlerService : IHandlerService {
+        private readonly IStockRepository   StockRepository;
+        private readonly IBrandRepository   BrandRepository;
         private readonly IHandlerRepository HandlerRepository;
         private readonly IProductRepository ProductRepository;
         private readonly IMapper Mapper;
@@ -48,16 +46,13 @@ namespace B2BApi.Services
         /// </summary>
         /// <param name="handlerId"></param>
         /// <returns></returns>
-        public async Task<ServiceResult<Handler>> GetHandlerAsync(int handlerId)
-        {
-            try
-            {
+        public async Task<ServiceResult<Handler>> GetHandlerAsync(int handlerId) {
+            try {
                 var handler = await HandlerRepository.GetHandlerAsync(handlerId);
 
                 return new ServiceResult<Handler>(handler, ResultStatus.Success);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return new ServiceResult<Handler>(null, ResultStatus.Fail, "Сервис недоступен");
             }
         }
@@ -66,16 +61,13 @@ namespace B2BApi.Services
         /// Get all handler objects in List<Handler/> 
         /// </summary>
         /// <returns></returns>
-        public async Task<ServiceResult<List<Handler>>> GetHandlerListAsync()
-        {
-            try
-            {
+        public async Task<ServiceResult<List<Handler>>> GetHandlerListAsync() {
+            try {
                 List<Handler> handlers = await HandlerRepository.GetHandlerListAsync();
 
                 return new ServiceResult<List<Handler>>(handlers, ResultStatus.Success);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return new ServiceResult<List<Handler>>(null, ResultStatus.Fail, "Сервис недоступен");
             }
         }
@@ -86,16 +78,13 @@ namespace B2BApi.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ServiceResult> DeleteHandlerAsync(int id)
-        {
-            try
-            {
+        public async Task<ServiceResult> DeleteHandlerAsync(int id) {
+            try {
                 await HandlerRepository.DeleteHandlerAsync(id);
 
                 return new ServiceResult(ResultStatus.Success);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return new ServiceResult(ResultStatus.Fail, "Сервис недоступен");
             }
         }
@@ -105,16 +94,13 @@ namespace B2BApi.Services
         /// </summary>
         /// <param name="handler"></param>
         /// <returns></returns>
-        public async Task<ServiceResult> UpdateHandlerAsync(Handler handler)
-        {
-            try
-            {
+        public async Task<ServiceResult> UpdateHandlerAsync(Handler handler) {
+            try {
                 await HandlerRepository.UpdateHandler(handler);
 
                 return new ServiceResult(ResultStatus.Success);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return new ServiceResult(ResultStatus.Fail, "Сервис недоступен");
             }
         }
@@ -124,16 +110,13 @@ namespace B2BApi.Services
         /// </summary>
         /// <param name="handler"></param>
         /// <returns></returns>
-        public async Task<ServiceResult> AddHandlerAsync(Handler handler)
-        {
-            try
-            {
+        public async Task<ServiceResult> AddHandlerAsync(Handler handler) {
+            try {
                 await HandlerRepository.AddHandler(handler);
 
                 return new ServiceResult(ResultStatus.Success);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return new ServiceResult(ResultStatus.Fail, "Сервис недоступен");
             }
         }
@@ -142,12 +125,10 @@ namespace B2BApi.Services
         // todo: доедалть имплементацию 
 
 
-        public async Task<ServiceResult> Start(int handlerId)
-        {
-            try
-            {
+        public async Task<ServiceResult> Start(int handlerId) {
+            try {
                 var handler = await HandlerRepository.GetHandlerAsync(handlerId);
-                var re = new Regex("(\\.(xlsx|xls|csv))");
+                var re      = new Regex("(\\.(xlsx|xls|csv))");
 
                 if (!re.IsMatch(handler.Url))
                     return new ServiceResult(ResultStatus.Fail, "Неверный Url прайса");
@@ -157,27 +138,22 @@ namespace B2BApi.Services
                 string filePath = Configuration.GetConnectionString("excel") +
                                   fileName.Replace(" ", "") + fileExtension;
 
-                using (var wc = new WebClient())
-                {
+                using (var wc = new WebClient()) {
                     wc.DownloadFile(new Uri(handler.Url), filePath);
                 }
 
 
                 using (var stream =
-                    new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                {
+                    new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
                     IExcelDataReader excelDataReader = ExcelReaderFactory.CreateReader(stream);
-                    DataSet dataSet = excelDataReader.AsDataSet(new ExcelDataSetConfiguration
-                    {
-                        ConfigureDataTable = _ => new ExcelDataTableConfiguration
-                        {
+                    DataSet dataSet = excelDataReader.AsDataSet(new ExcelDataSetConfiguration {
+                        ConfigureDataTable = _ => new ExcelDataTableConfiguration {
                             UseHeaderRow = false // Use first row is ColumnName here :D
                         }
                     });
 
-                    if (dataSet.Tables.Count > 0)
-                    {
-                        var dataTable = dataSet.Tables[0];
+                    if (dataSet.Tables.Count > 0) {
+                        var dataTable   = dataSet.Tables[0];
                         var grabColumns = handler.GrabColumnItems;
 
                         var products = new List<Product>();
@@ -243,8 +219,7 @@ namespace B2BApi.Services
 
                 return new ServiceResult(ResultStatus.Fail, "");
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return new ServiceResult(ResultStatus.Fail, "Не удалось обработать прайс");
             }
         }
