@@ -37,9 +37,6 @@ namespace B2BApi
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             
-            services
-                .AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
-                .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             
             services.AddConfigurations(Configuration);

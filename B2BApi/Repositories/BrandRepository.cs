@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using B2BApi.DbContext;
@@ -23,5 +25,12 @@ namespace B2BApi.Repositories
             =>
                 await Context.Brands.FirstOrDefaultAsync(x => x.Name.Equals(brandName,
                     StringComparison.InvariantCultureIgnoreCase));
+
+        public async Task<List<Brand>> GetBrandsByNameAsync(List<Brand> brands)
+            =>
+                await Context.Brands
+                    .Where(b => brands.Any(x => x.Name.Equals(b.Name,
+                        StringComparison.InvariantCultureIgnoreCase)))
+                    .ToListAsync();
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using B2BApi.DbContext;
@@ -20,6 +22,14 @@ namespace B2BApi.Repositories
                 await Context.StockProducts
                     .FirstOrDefaultAsync(x => x.Product.Id == productId &&
                                               x.Provider.Id == providerId);
+
+        public async Task<List<Stock>> GetStocksForParserAsync(List<Product> products, int providerId)
+        {
+            return await Context.StockProducts
+                .Include(s => s.Product)
+                .Where(s => s.ProviderId == providerId && products.Any(p => p.Id == s.ProductId))
+                .ToListAsync();
+        }
 
         public async Task<Stock> UpdateStock(Stock newStock, Stock oldStock = null)
         {

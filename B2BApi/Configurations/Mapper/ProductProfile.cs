@@ -8,7 +8,11 @@ namespace B2BApi.Configurations.Mapper
         public ProductProfile()
         {
             CreateMap<Product, Product>()
-                .ForMember(x => x.Id, opt => opt.Ignore());
+                .ForMember(x => x.Id, opt => opt.Ignore())
+                .ForMember(x => x.Stocks, opt => opt.Ignore())
+                .ForMember(x => x.Brand, opt => opt.Ignore());
+
+            CreateMap<Brand, Brand>();
         }
     }
 }
