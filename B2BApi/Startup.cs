@@ -56,17 +56,25 @@ namespace B2BApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwaggerConfiguration();
-                
-                // MARK - Hangfire
-                GlobalConfiguration.Configuration
-                    .UseActivator(new HangfireActivator(serviceProvider));
-                app.UseHangfireDashboard();
-                app.UseHangfireServer();  
                 
             } else {
                 app.UseHsts();
             }
+
+            app.UseCors(builder =>
+                            builder.WithOrigins("http://e-pars.net")
+                                   .AllowAnyHeader()
+            );
+            
+            // перенести в дев по релизу
+            app.UseSwaggerConfiguration();
+                
+            // MARK - Hangfire
+            GlobalConfiguration.Configuration
+                               .UseActivator(new HangfireActivator(serviceProvider));
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();  
+            // end
             
             app.UseHttpsRedirection();
             app.UseAuthentication();
