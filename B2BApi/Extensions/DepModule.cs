@@ -3,6 +3,7 @@ using B2BApi.Interfaces;
 using B2BApi.Providers;
 using B2BApi.Repositories;
 using B2BApi.Services;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace B2BApi.Extensions
 {
@@ -20,6 +21,10 @@ namespace B2BApi.Extensions
             builder.RegisterType<Sha256HashProvider>()
                 .As<IHashProvider>()
                 .InstancePerLifetimeScope();
+            
+            builder.RegisterType<MemoryCache>()
+                .As<IMemoryCache>()
+                .SingleInstance();
             
             #endregion
 

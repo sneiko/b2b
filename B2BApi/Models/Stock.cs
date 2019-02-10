@@ -20,8 +20,13 @@ namespace B2BApi.Models
 
         #region Navigation Properties
 
+        public int ProductId { get; set; }
+        [ForeignKey("ProductId")]
         [JsonIgnore]
         public Product Product { get; set; }
+
+        public int ProviderId { get; set; }
+        [ForeignKey("ProviderId")]
         [JsonIgnore]
         public Provider Provider { get; set; }
 

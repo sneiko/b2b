@@ -8,6 +8,7 @@ namespace B2BApi.Interfaces
     {
         Task<Product> GetProductAsync(int productId);
         Task<Product> GetProductAsync(string partNumber);
+        Task<List<Product>> GetProductsForParseAsync(List<Product> products, int providerId);
         Task DeleteProductAsync(int productId);
         Task<List<Product>> GetProductListAsync();
         Task UpdateProduct(Product product);

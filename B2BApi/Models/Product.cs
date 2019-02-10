@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using B2BApi.Models.Helpers;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace B2BApi.Models
 {   
@@ -10,7 +12,6 @@ namespace B2BApi.Models
         [Key]
         public int Id { get; set; }
         public string Model { get; set; }
-        public Brand Brand { get; set; }
         public string PartNumber { get; set; }
         public string Gtin { get; set; }
         public Category Category { get; set; } 
@@ -18,6 +19,9 @@ namespace B2BApi.Models
         public DateTime UpdateTime { get; set; }
         
         #region Navigation properties
+        public int BrandId { get; set; }
+        [ForeignKey("BrandId")]
+        public Brand Brand { get; set; }
         public List<Stock> Stocks { get; set; }
         #endregion
         

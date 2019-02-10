@@ -13,7 +13,9 @@ namespace B2BApi.Configurations.Mapper
                 .ForMember(x => x.Id, opt => opt.Ignore())
                 .ForMember(x => x.PriceType, opt => opt.Ignore())
                 .ForMember(x => x.Product, opt => opt.Ignore())
-                .ForMember(x => x.Provider, opt => opt.Ignore());
+                .ForMember(x => x.Provider, opt => opt.Ignore())
+                .ForMember(x => x.ProductId, opt => opt.Ignore())    
+                .ForMember(x => x.ProviderId, opt => opt.Ignore());
         }
     }
 }
