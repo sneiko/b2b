@@ -30,15 +30,13 @@ namespace B2BApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
-                .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddConfigurations(Configuration);
             services.AddMappingProfiles();
             services.AddSwagger();
             services.AddAJwtAuthentication(Configuration);
             services.AddDb(Configuration);
+            services.AddCorsPolicy(Configuration);
             
             // MARK - Hangfire
             services.AddHangfire(opt => opt.UseMemoryStorage());
@@ -59,10 +57,7 @@ namespace B2BApi
                 app.UseHsts();
             }
 
-            app.UseCors(builder =>
-                            builder.WithOrigins("http://e-pars.net")
-                                   .AllowAnyHeader()
-            );
+            app.UseCors("CorsPolicy");
             
             // перенести в дев по релизу
             app.UseSwaggerConfiguration();
