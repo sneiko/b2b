@@ -202,9 +202,15 @@ project.lock.json
 **/node_modules/*
 **/wwwroot/*
 
-# SpecFlow specific
+# sqllite DB
+*.db
+
+# Excel
 *.xls
 *.xlsx
+*.csv
+
+# SpecFlow specific
 *.feature.cs
 *.feature.xlsx.*
 *.Specs_*.html
