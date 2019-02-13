@@ -1,16 +1,14 @@
 ﻿using System;
+using B2BApi.Extensions;
+using B2BApi.Initializers;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-
-using B2BApi.Extensions;
-using B2BApi.Initializers;
 
 namespace B2BApi
 {
@@ -32,15 +30,13 @@ namespace B2BApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
-                .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddConfigurations(Configuration);
             services.AddMappingProfiles();
             services.AddSwagger();
             services.AddAJwtAuthentication(Configuration);
             services.AddDb(Configuration);
+            services.AddCorsPolicy(Configuration);
             
             // MARK - Hangfire
             services.AddHangfire(opt => opt.UseMemoryStorage());
@@ -56,17 +52,22 @@ namespace B2BApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwaggerConfiguration();
-                
-                // MARK - Hangfire
-                GlobalConfiguration.Configuration
-                    .UseActivator(new HangfireActivator(serviceProvider));
-                app.UseHangfireDashboard();
-                app.UseHangfireServer();  
                 
             } else {
                 app.UseHsts();
             }
+
+            app.UseCors("CorsPolicy");
+            
+            // перенести в дев по релизу
+            app.UseSwaggerConfiguration();
+                
+            // MARK - Hangfire
+            GlobalConfiguration.Configuration
+                               .UseActivator(new HangfireActivator(serviceProvider));
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();  
+            // end
             
             app.UseHttpsRedirection();
             app.UseAuthentication();

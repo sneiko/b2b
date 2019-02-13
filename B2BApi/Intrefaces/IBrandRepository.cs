@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using B2BApi.Models;
 using B2BApi.ViewModels;
@@ -8,5 +9,6 @@ namespace B2BApi.Interfaces
     {
         Task<Brand> GetBrandAsync(int brandId);
         Task<Brand> GetBrandAsync(string brandName);
+        Task<List<Brand>> GetBrandsByNameAsync(List<Brand> brands);
     }
 }

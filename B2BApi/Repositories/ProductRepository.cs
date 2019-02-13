@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using B2BApi.DbContext;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace B2BApi.Repositories
 {
-    public class ProductRepository: BaseRepository, IProductRepository
+    public class ProductRepository : BaseRepository, IProductRepository
     {
         public ProductRepository(B2BDbContext context, IMapper mapper) : base(context, mapper)
         {
@@ -34,14 +35,23 @@ namespace B2BApi.Repositories
         public async Task<Product> GetProductAsync(string partNumber)
             => await Context.Products
                 .FirstOrDefaultAsync(x => x.PartNumber == partNumber);
-        
+
+        public async Task<List<Product>> GetProductsForParseAsync(List<Product> products, int providerId)
+        {   
+            return await Context.Products
+                .Where(p => products.Any(x => x.PartNumber == p.PartNumber))
+                .ToListAsync();
+        }
+
         /// <summary>
         /// Get product list from DB
         /// </summary>
         /// <returns></returns>
         public async Task<List<Product>> GetProductListAsync()
-            => await Context.Products.ToListAsync();
-        
+            => await Context.Products
+                .Include(x => x.Stocks)
+                .ToListAsync();
+
         /// <summary>
         /// Delete product from DB
         /// </summary>
