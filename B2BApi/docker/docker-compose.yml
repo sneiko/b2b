@@ -1,0 +1,10 @@
+version: '3'
+services:  
+  web:
+    container_name: B2BApi
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      
+    ports:
+      - "80:80"

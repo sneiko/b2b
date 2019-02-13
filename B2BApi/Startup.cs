@@ -3,6 +3,7 @@ using B2BApi.Extensions;
 using B2BApi.Initializers;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -13,21 +14,27 @@ namespace B2BApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            
+            Configuration = builder.Build();
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            
+            services
+                .AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
+                .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
             services.AddConfigurations(Configuration);
-         
             services.AddMappingProfiles();
             services.AddSwagger();
             services.AddAJwtAuthentication(Configuration);
@@ -47,18 +54,25 @@ namespace B2BApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwaggerConfiguration();
-                
-                // MARK - Hangfire
-                GlobalConfiguration.Configuration
-                    .UseActivator(new HangfireActivator(serviceProvider));
-                app.UseHangfireDashboard();
-                app.UseHangfireServer();  
                 
             } else {
                 app.UseHsts();
             }
 
+            app.UseCors(builder =>
+                            builder.WithOrigins("http://e-pars.net")
+                                   .AllowAnyHeader()
+            );
+            
+            // перенести в дев по релизу
+            app.UseSwaggerConfiguration();
+                
+            // MARK - Hangfire
+            GlobalConfiguration.Configuration
+                               .UseActivator(new HangfireActivator(serviceProvider));
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();  
+            // end
             
             app.UseHttpsRedirection();
             app.UseAuthentication();
